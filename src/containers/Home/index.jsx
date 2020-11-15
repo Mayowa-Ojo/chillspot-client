@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import tw from "twin.macro";
+import Slick from "react-slick";
 
 import { Bucket, Button, Image, Text, FlexBox, StoryCard } from "../../components"
-import { Jumbotron, SearchBox , SearchInput, Marker } from './styles';
+import { Jumbotron, SearchBox , SearchInput, Marker, StorieSlider, SliderArrow, SliderFilter } from './styles';
 import { ReactComponent as SearchIcon } from "../../assets/svg/search.svg";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
 import { ReactComponent as MarkerIcon } from "../../assets/svg/marker.svg";
@@ -10,7 +11,32 @@ import { ReactComponent as GithubIcon } from "../../assets/svg/github.svg";
 import { ReactComponent as InstagramIcon } from "../../assets/svg/instagram.svg";
 import { ReactComponent as TwitterIcon } from "../../assets/svg/twitter.svg";
 
+const SliderArrowPrev = ({ onClick }) => (
+   <SliderArrow css={["left: 50px; top: 50%; transform: translate(0, -50%);"]} onClick={onClick}>
+      <ChevronIcon css={[tw`w-2 h-2 stroke-current text-white transform rotate-180`]} />
+   </SliderArrow>
+);
+
+const SliderArrowNext = ({ onClick }) => (
+   <SliderArrow css={["right: 0px; top: 50%; transform: translate(0, -50%);"]} onClick={onClick}>
+      <ChevronIcon css={[tw`w-2 h-2 stroke-current text-white`]} />
+   </SliderArrow>
+);
+
 const Home = () => {
+   const sliderSettings = {
+      dots: true,
+      infinite: true,
+      slidesToShow: 2,
+      slidesToScroll: 1,
+      speed: 500,
+      centerMode: true,
+      nextArrow: <SliderArrowNext />,
+      prevArrow: <SliderArrowPrev />
+   }
+
+   const [sliderFilter, setSliderFilter] = useState("popular");
+
    return (
       <Bucket css={[tw`bg-chill-gray1 h-full`]}>
          <FlexBox css={[tw`items-start`]}>
@@ -55,30 +81,33 @@ const Home = () => {
                </Bucket>
 
                <FlexBox css={[tw`justify-start mt-4`]}>
-                  <Bucket as="span" css={[tw`inline-flex flex-col items-center relative mr-8`]}>
-                     <Text css={[tw`text-c-15 font-semibold text-chill-indigo1 cursor-pointer`]}>
+                  <SliderFilter isActive={sliderFilter === "popular"} onClick={() => setSliderFilter("popular")}>
+                     <Text css={[tw`text-c-15 font-semibold cursor-pointer`]}>
                         Popular
                      </Text>
-                     <Bucket as="span" css={[tw`inline-block bg-chill-indigo1 w-1 h-1 rounded-full`]}></Bucket>
-                  </Bucket>
-                  <Bucket as="span" css={[tw`inline-flex flex-col items-center relative mr-8`]}>
-                     <Text css={[tw`text-c-15 font-semibold text-opacity-50 cursor-pointer hover:text-opacity-75`]}>
+                     <Bucket as="span" css={[tw`inline-block bg-chill-indigo1 w-1 h-1 rounded-full invisible`]}></Bucket>
+                  </SliderFilter>
+                  <SliderFilter isActive={sliderFilter === "rating"} onClick={() => setSliderFilter("rating")}>
+                     <Text css={[tw`text-c-15 font-semibold cursor-pointer`]}>
                         Rating
                      </Text>
                      <Bucket as="span" css={[tw`inline-block bg-chill-indigo1 w-1 h-1 rounded-full invisible`]}></Bucket>
-                  </Bucket>
-                  <Bucket as="span" css={[tw`inline-flex flex-col items-center relative mr-8`]}>
-                     <Text css={[tw`text-c-15 font-semibold text-opacity-50 cursor-pointer hover:text-opacity-75`]}>
+                  </SliderFilter>
+                  <SliderFilter isActive={sliderFilter === "recent"} onClick={() => setSliderFilter("recent")}>
+                     <Text css={[tw`text-c-15 font-semibold cursor-pointer`]}>
                         Recent
                      </Text>
                      <Bucket as="span" css={[tw`inline-block bg-chill-indigo1 w-1 h-1 rounded-full invisible`]}></Bucket>
-                  </Bucket>
+                  </SliderFilter>
                </FlexBox>
 
-               <Bucket css={[tw`mt-8 flex`]}>
-                  <StoryCard />
-                  <StoryCard />
-               </Bucket>
+               <StorieSlider>
+                  <Slick {...sliderSettings}>
+                     <StoryCard />
+                     <StoryCard />
+                     <StoryCard />
+                  </Slick>
+               </StorieSlider>
 
                <Bucket css={[tw`mt-8`]}>
                   <Button css={[tw`text-c-18 font-semibold px-4 rounded-md bg-chill-indigo2`]}>Share your story</Button>

@@ -22,11 +22,11 @@ export const SearchBox = styled.div`
    max-width: 400px;
    width: 450px;
    &:hover {
-      border: 1px solid ${theme`colors.chill.indigo1`};
+      border: 1px solid ${theme`colors.chill.gray3`};
       box-shadow: 0px 0px 0px 4px rgba(146, 145, 232, 0.10);
    }
    &:focus-within {
-      border: 1px solid ${theme`colors.chill.indigo1`};
+      border: 1px solid ${theme`colors.chill.gray3`};
       box-shadow: 0px 0px 0px 4px rgba(146, 145, 232, 0.15);
    }
    transition: box-shadow .2s linear;
@@ -45,5 +45,35 @@ export const Marker = styled.span(({ top, left }) => [
    css`
       top: ${top};
       left: ${left};
+   `
+]);
+
+export const StorieSlider = styled.div`
+   ${tw`mt-8 overflow-hidden`}
+
+   .slick-slider {
+      margin-left: -50px;
+   }
+   .slick-slide {
+      &:focus {
+         outline: none;
+      }
+   }
+`;
+
+export const SliderArrow = styled.span`
+   ${tw`inline-flex items-center justify-center w-5 h-5 rounded-full bg-chill-indigo1 absolute z-10 cursor-pointer`}
+`;
+
+export const SliderFilter = styled.span(({ isActive }) => [
+   tw`inline-flex flex-col items-center relative mr-8`,
+
+   isActive && css`
+      p {
+         color: ${theme`colors.chill.indigo2`};
+      }
+      span {
+         visibility: visible;
+      }
    `
 ]);
