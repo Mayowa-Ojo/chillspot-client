@@ -1,8 +1,7 @@
 import React from 'react'
 import tw from "twin.macro";
 
-import { Bucket, Button, Image, Text, FlexBox } from "../../components"
-import { StoryCard } from "../../containers";
+import { Bucket, Button, Image, Text, FlexBox, StoryCard } from "../../components"
 import { Jumbotron, SearchBox , SearchInput, Marker } from './styles';
 import { ReactComponent as SearchIcon } from "../../assets/svg/search.svg";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
@@ -47,7 +46,7 @@ const Home = () => {
 
             <Bucket css={[tw`w-2/5 mx-10 mt-8`]}>
                <SearchBox>
-                  <SearchInput placeholder='Search... [press "/" to focus]'/>
+                  <SearchInput placeholder='Search... press "/" to focus'/>
                   <SearchIcon css={[tw`w-4 h-4 absolute right-0 top-0 mr-4 mt-3`]} />
                </SearchBox>
 

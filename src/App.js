@@ -1,8 +1,8 @@
 import { GlobalStyles } from "twin.macro";
 import { BrowserRouter as Router, Route , Switch} from "react-router-dom";
 
-import { Home, Login, NotFound } from "./views";
-import { Navbar } from "./containers";
+import { Home, Login, NotFound } from "./containers";
+import { Navbar } from "./components";
 
 function App() {
    return (
