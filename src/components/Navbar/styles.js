@@ -4,7 +4,7 @@ export const Nav = styled.nav(({ hasShadow, hidden }) => [
    tw`bg-chill-gray1 h-16 w-full flex items-center justify-between px-8`,
 
    hasShadow && css`
-      box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 3px 0px rgba(0, 0, 0, 0.1);
    `,
    hidden && css`
       display: none;
