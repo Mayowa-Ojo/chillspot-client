@@ -47,7 +47,7 @@ const Home = () => {
                   <Text css={[tw`text-white font-medium text-c-18`]}>Find your next adventure.</Text>
                   <Button css={[tw`bg-chill-indigo2 px-4 mt-4 text-c-18 font-semibold inline-flex items-center`]}>
                      Explore
-                     <ChevronIcon css={[tw`ml-2 w-3 h-3`]}/>
+                     <ChevronIcon css={[tw`stroke-current text-white ml-2 w-3 h-3`]}/>
                   </Button>
                   <Marker top="10%" left="100%">
                      <MarkerIcon css={[tw`w-5 h-5 fill-current text-white hover:text-yellow-400 cursor-pointer`]}/>
