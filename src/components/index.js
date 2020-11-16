@@ -6,3 +6,4 @@ export { default as Text } from "./Styled/Text";
 export { default as Divider } from "./Styled/Divider";
 export { default as Navbar } from "./Navbar";
 export { default as StoryCard } from "./StoryCard";
+export { default as Dropdown } from "./Dropdown";
