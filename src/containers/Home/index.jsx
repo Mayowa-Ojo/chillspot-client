@@ -103,9 +103,9 @@ const Home = () => {
 
                <StorieSlider>
                   <Slick {...sliderSettings}>
-                     <StoryCard />
-                     <StoryCard />
-                     <StoryCard />
+                     <StoryCard isSlider />
+                     <StoryCard isSlider />
+                     <StoryCard isSlider />
                   </Slick>
                </StorieSlider>
 
