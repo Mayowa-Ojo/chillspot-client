@@ -4,6 +4,8 @@ export { default as FlexBox } from "./Styled/FlexBox";
 export { default as Image } from "./Styled/Image";
 export { default as Text } from "./Styled/Text";
 export { default as Divider } from "./Styled/Divider";
+export { default as Avatar } from "./Styled/Avatar";
 export { default as Navbar } from "./Navbar";
 export { default as StoryCard } from "./StoryCard";
+export { default as UserCard } from "./UserCard";
 export { default as Dropdown } from "./Dropdown";
