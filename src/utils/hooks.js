@@ -12,7 +12,7 @@ export const useClickAway = (fn) => {
    }, []);
 
    const clickListner = useCallback((e) => {
-      if(!ref.current.contains(e.target)) {
+      if(ref.current && !ref.current.contains(e.target)) {
          fn();
       }
 
