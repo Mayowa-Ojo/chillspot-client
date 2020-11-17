@@ -33,14 +33,14 @@ const StoryCard = ({ isSlider }) => {
                   <MarkerIcon css={[tw`fill-current text-white w-4 h-4`]} />
                   <Text css={[tw`text-c-12 font-semibold text-white ml-1`]}>Ontario, Canada</Text>
                </Bucket>
-               { isSlider && <Bucket css={[tw`inline-flex items-center justify-center`]}>
+               { !isSlider && <Bucket css={[tw`inline-flex items-center justify-center`]}>
                   <SaveIcon css={[tw`fill-current text-white w-5 h-5`]} />
                </Bucket>}
             </FlexBox>
          </CardOverlay>
       </CardThumbnail>
 
-      <CardDetails>
+      { !isSlider && <CardDetails>
          <Avatar>
             <Image src="https://images.pexels.com/photos/61100/pexels-photo-61100.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" />
          </Avatar>
@@ -53,7 +53,7 @@ const StoryCard = ({ isSlider }) => {
             <HeartIcon css={[tw`fill-current text-chill-gray4  mr-2 w-4 h-4`]} />
             234
          </Bucket>
-      </CardDetails>
+      </CardDetails>}
       </CardWrapper>
    )
 }

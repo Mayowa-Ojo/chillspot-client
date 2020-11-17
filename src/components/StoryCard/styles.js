@@ -11,12 +11,12 @@ export const CardThumbnail = styled.div(({ isSlider }) => [
       background-size: cover;
    `,
 
-   isSlider && css`
+   !isSlider && css`
       width: 280px;
       height: 230px;
       border-radius: 8px;
    `,
-   !isSlider && css`
+   isSlider && css`
       width: 189px;
       height: 258px;
       border-radius: 25px;
