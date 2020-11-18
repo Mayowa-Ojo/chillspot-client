@@ -9,3 +9,5 @@ export { default as Navbar } from "./Navbar";
 export { default as StoryCard } from "./StoryCard";
 export { default as UserCard } from "./UserCard";
 export { default as Dropdown } from "./Dropdown";
+export { default as ModalWrapper } from "./ModalWrapper";
+export { default as Comment } from "./Comment";
