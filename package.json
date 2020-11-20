@@ -9,6 +9,7 @@
     "@tippyjs/react": "^4.2.0",
     "autoprefixer": "^9.8.6",
     "babel-plugin-macros": "^2.8.0",
+    "emoji-mart": "^3.0.0",
     "postcss-cli": "^8.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
