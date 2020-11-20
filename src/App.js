@@ -1,18 +1,13 @@
 import { GlobalStyles } from "twin.macro";
 import { BrowserRouter as Router, Route , Switch} from "react-router-dom";
 
-import { Home, Stories, Login, Signup, Story, NotFound } from "./containers";
+import { Home, Stories, Login, Signup, NotFound } from "./containers";
 import { Navbar, ModalWrapper } from "./components";
+import Store from "./store";
 
 function App() {
-   const modalComponents = {
-      story: Story
-   }
-
-   // NOTE: current-modal value will be fetched from global state
-   const CurrentModal = modalComponents["story"];
-
    return (
+      <Store>
       <Router>
          <GlobalStyles />
          <Navbar />
@@ -25,10 +20,9 @@ function App() {
             <Route path="*" component={NotFound}></Route>
          </Switch>
 
-         <ModalWrapper>
-            {<CurrentModal />}
-         </ModalWrapper>
+         <ModalWrapper />
       </Router>
+      </Store>
    );
 }
 
