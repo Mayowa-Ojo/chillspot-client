@@ -75,14 +75,14 @@ const Stories = () => {
 
          <Bucket css={[tw`px-16`]}>
             <StoriesGrid>
-               <StoryCard />
-               <StoryCard />
-               <StoryCard />
-               <StoryCard />
-               <StoryCard />
-               <StoryCard />
-               <StoryCard />
-               <StoryCard />
+               <StoryCard showActionBar />
+               <StoryCard showActionBar />
+               <StoryCard showActionBar />
+               <StoryCard showActionBar />
+               <StoryCard showActionBar />
+               <StoryCard showActionBar />
+               <StoryCard showActionBar />
+               <StoryCard showActionBar />
             </StoriesGrid>
 
             <Bucket css={[tw`mt-20`]}>
