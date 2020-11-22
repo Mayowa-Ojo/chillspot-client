@@ -1,7 +1,7 @@
 import React from 'react';
 import tw from "twin.macro";
 
-import { Avatar, FlexBox, Image, Text, Bucket } from '..';
+import { Avatar, FlexBox, Image, Text, Bucket, Tooltip } from '..';
 import { ActionBar, CommentWrapper } from './styles';
 import { ReactComponent as HeartIcon } from "../../assets/svg/heart.svg"
 import { ReactComponent as BrokenHeartIcon } from "../../assets/svg/broken-heart.svg"
@@ -25,15 +25,21 @@ const Comment = () => {
             <ActionBar>
                <FlexBox>
                   <Bucket as="span" css={[tw`inline-flex items-center text-c-15 font-medium text-chill-gray4`]}>
-                     <HeartIcon css={[tw`stroke-current text-chill-gray4 w-4 h-4 mr-2 cursor-pointer`]} />
+                     <Tooltip content="like" placement="top">
+                        <HeartIcon css={[tw`stroke-current text-chill-gray4 w-4 h-4 mr-2 cursor-pointer`]} />
+                     </Tooltip>
                      12
                   </Bucket>
                   <Bucket as="span" css={[tw`inline-flex items-center text-c-15 font-medium text-chill-gray4 ml-3`]}>
-                     <BrokenHeartIcon css={[tw`fill-current text-chill-gray4 mr-2 cursor-pointer`]} />
+                     <Tooltip content="dislike" placement="top">
+                        <BrokenHeartIcon css={[tw`fill-current text-chill-gray4 mr-2 cursor-pointer`]} />
+                     </Tooltip>
                      3
                   </Bucket>
                   <Bucket as="span" css={[tw`ml-3`]}>
+                  <Tooltip content="edit" placement="top">
                      <EditIcon css={[tw`fill-current text-chill-gray4 mr-2 cursor-pointer`]} />
+                  </Tooltip>
                   </Bucket>
                </FlexBox>
                <Bucket as="span" css={[tw`inline-flex items-center justify-center w-8 h-8 bg-transparent rounded-full cursor-pointer hover:bg-gray-200`]}>
