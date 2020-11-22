@@ -11,3 +11,6 @@ export { default as UserCard } from "./UserCard";
 export { default as Dropdown } from "./Dropdown";
 export { default as ModalWrapper } from "./ModalWrapper";
 export { default as Comment } from "./Comment";
+export { default as Tooltip } from "./Tooltip";
+export { default as EmojiPicker } from "./EmojiPicker";
+export { default as Popover } from "./Popover";
