@@ -2,7 +2,7 @@ import tw, { styled, css } from "twin.macro";
 
 export const CardWrapper = styled.div``;
 
-export const CardThumbnail = styled.div(({ isSlider }) => [
+export const CardThumbnail = styled.div(({ isSlider, isSmall }) => [
    tw`relative overflow-hidden mr-8`,
    css`
       background-image: url(https://chillspot-s3-bucket.s3.us-east-2.amazonaws.com/images/london-2393098_1280.jpg);
@@ -12,15 +12,21 @@ export const CardThumbnail = styled.div(({ isSlider }) => [
    `,
 
    !isSlider && css`
-      width: 280px;
-      height: 230px;
+      width: 275px;
+      height: 205px;
       border-radius: 8px;
    `,
    isSlider && css`
       width: 189px;
       height: 258px;
       border-radius: 25px;
+   `,
+   isSmall && css`
+      width: 245px;
+      height: 185px;
+      border-radius: 8px;
    `
+
 ]);
 
 export const CardOverlay = styled.div`
@@ -32,4 +38,7 @@ export const CardOverlay = styled.div`
 
 export const CardDetails = styled.div`
    ${tw`flex items-center mt-4`}
+
+   width: 280px;
+   ${({ showActionBar }) => !showActionBar && tw`hidden`}
 `;
