@@ -14,3 +14,4 @@ export { default as Comment } from "./Comment";
 export { default as Tooltip } from "./Tooltip";
 export { default as EmojiPicker } from "./EmojiPicker";
 export { default as Popover } from "./Popover";
+export { default as Editor } from "./Editor";
