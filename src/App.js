@@ -1,8 +1,8 @@
 import { GlobalStyles } from "twin.macro";
 import { BrowserRouter as Router, Route , Switch} from "react-router-dom";
 
-import { Home, Stories, Login, Signup, NotFound } from "./containers";
-import { Navbar, ModalWrapper } from "./components";
+import { Home, Stories, Login, Signup, NotFound, Profile } from "./containers";
+import { Navbar, ModalWrapper, Footer } from "./components";
 import Store from "./store";
 
 function App() {
@@ -17,9 +17,11 @@ function App() {
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={Signup} />
             <Route path="/stories" exact component={Stories} />
+            <Route path="/:username" exact component={Profile} />
             <Route path="*" component={NotFound}></Route>
          </Switch>
 
+         <Footer />
          <ModalWrapper />
       </Router>
       </Store>
