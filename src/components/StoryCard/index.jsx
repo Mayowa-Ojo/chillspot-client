@@ -1,4 +1,5 @@
-import React, { useContext } from 'react'
+import React from 'react'
+import { Link, useLocation } from "react-router-dom";
 import tw from "twin.macro";
 
 import { CardWrapper, CardOverlay, CardThumbnail, CardDetails } from "./styles";
@@ -8,30 +9,15 @@ import { ReactComponent as HeartIcon } from "../../assets/svg/heart.svg";
 import { ReactComponent as SaveIcon } from "../../assets/svg/save.svg";
 import { ReactComponent as MarkerIcon } from "../../assets/svg/marker.svg";
 import { ReactComponent as CommentIcon } from "../../assets/svg/comment.svg";
-import { StoreContext } from "../../store";
-import types from "../../store/types";
 
 const StoryCard = ({ isSlider, showActionBar, isSmall }) => {
-   const context = useContext(StoreContext);
-   const { dispatch } = context;
-
-   const viewStory = () => {
-      dispatch({
-         namespace: "modal",
-         type: types.SET_MODAL_COMPONENT,
-         payload: "story"
-      });
-
-      dispatch({
-         namespace: "modal",
-         type: types.TOGGLE_MODAL
-      });
-   }
+   const location = useLocation();
 
    return (
       <CardWrapper>
          <CardThumbnail isSlider={isSlider} isSmall={isSmall}>
-            <CardOverlay onClick ={viewStory}>
+            <Link to={{pathname: "/x/story", state: {background: location, component: "story"}}}> {/* TODO: path should reflect slug */}
+            <CardOverlay>
                <FlexBox css={[tw`justify-between items-start`]}>
                   <Bucket>
                      <Text css={[tw`font-semibold text-white`]}>Niagara Falls</Text>
@@ -56,6 +42,7 @@ const StoryCard = ({ isSlider, showActionBar, isSmall }) => {
                   </Bucket>}
                </FlexBox>
             </CardOverlay>
+            </Link>
          </CardThumbnail>
 
          { !isSlider && 
