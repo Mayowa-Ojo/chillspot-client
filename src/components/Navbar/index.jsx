@@ -11,28 +11,14 @@ import { ReactComponent as HeartIcon } from "../../assets/svg/heart.svg";
 import { ReactComponent as FolderIcon } from "../../assets/svg/folder.svg";
 import { ReactComponent as ExitIcon } from "../../assets/svg/exit.svg";
 import { StoreContext } from "../../store";
-import types from "../../store/types";
 
 const Navbar = () => {
+   const location = useLocation();
    const context = useContext(StoreContext);
-   const { state: { auth }, dispatch} = context;
-   const { pathname } = useLocation();
-
-   const handleNewStory = () => {
-      dispatch({
-         namespace: "modal",
-         type: types.SET_MODAL_COMPONENT,
-         payload: "newStory"
-      });
-
-      dispatch({
-         namespace: "modal",
-         type: types.TOGGLE_MODAL,
-      });
-   }
+   const { state: { auth }} = context;
 
    return (
-      <Nav hasShadow={pathname !== "/"} hidden={pathname === "/login" || pathname === "/signup"}>
+      <Nav hasShadow={location.pathname !== "/"} hidden={location.pathname === "/login" || location.pathname === "/signup"}>
          <Link to="/">
             <Logo />
          </Link>
@@ -53,10 +39,12 @@ const Navbar = () => {
                      <Image src="https://uifaces.co/our-content/donated/n4Ngwvi7.jpg" alt="profile image"/>
                   </Popover>
                </Avatar>
-               <NavItem css={[tw`py-2 px-3 ml-4 rounded-md`]} onClick={handleNewStory}>
-                  <FeatherIcon css={[tw`fill-current text-white w-4 h-4 mr-2`]}/>
-                  New Story
-               </NavItem>
+               <Link to={{pathname: "/x/new", state: {background: location, component: "newStory"}}}>
+                  <NavItem css={[tw`py-2 px-3 ml-4 rounded-md`]}>
+                     <FeatherIcon css={[tw`fill-current text-white w-4 h-4 mr-2`]}/>
+                     New Story
+                  </NavItem>
+               </Link>
             </Bucket>
          }
       </Nav>
