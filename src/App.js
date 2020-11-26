@@ -1,18 +1,21 @@
 import { GlobalStyles } from "twin.macro";
-import { BrowserRouter as Router, Route , Switch} from "react-router-dom";
+import { Route , Switch, useLocation } from "react-router-dom";
 
 import { Home, Stories, Login, Signup, NotFound, Profile } from "./containers";
 import { Navbar, ModalWrapper, Footer } from "./components";
 import Store from "./store";
 
 function App() {
+   // handle modal sub-routing
+   const location = useLocation();
+   const background = location.state && location.state.background;
+
    return (
       <Store>
-      <Router>
          <GlobalStyles />
          <Navbar />
 
-         <Switch>
+         <Switch location={background || location}>
             <Route path="/" exact component={Home} />
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={Signup} />
@@ -21,9 +24,10 @@ function App() {
             <Route path="*" component={NotFound}></Route>
          </Switch>
 
+         { background && 
+           <Route path="/x/:modal" children={<ModalWrapper component={location.state.component}/>} />
+         }
          <Footer />
-         <ModalWrapper />
-      </Router>
       </Store>
    );
 }
