@@ -1,6 +1,6 @@
 import tw, { styled, theme } from "twin.macro";
 
-export const FormWrapper = styled.div`
+export const FormWrapper = styled.form`
    ${tw``}
 
    width: 420px;
