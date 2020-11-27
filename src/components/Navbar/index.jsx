@@ -30,17 +30,21 @@ const Navbar = () => {
             </Bucket>
             :
             <Bucket as="span" css={[tw`inline-flex items-center`]}>
-               <SearchBox>
-                  <SearchIcon css={[tw`absolute fill-current text-chill-gray4 mt-2 ml-3 left-0`, "width: .8rem; height: .8rem"]}/>
-                  <SearchInput placeholder="Search..." />
-               </SearchBox>
-               <Avatar css={[tw`w-8 h-8 ml-4 cursor-pointer`]}>
+               { location.pathname === "/stories" ?
+                  <SearchBox>
+                     <SearchIcon css={[tw`absolute fill-current text-chill-gray4 mt-2 ml-3 left-0`, "width: .8rem; height: .8rem"]}/>
+                     <SearchInput placeholder="Search..." />
+                  </SearchBox>
+                  :
+                  <NavItem isTransparent css={[tw`-mr-2`]}><Link to="/stories">Stories</Link></NavItem>
+               }
+               <Avatar css={[tw`w-8 h-8 mx-8 cursor-pointer`]}>
                   <Popover placement="bottom" content={<ProfilePopover />}>
                      <Image src="https://uifaces.co/our-content/donated/n4Ngwvi7.jpg" alt="profile image"/>
                   </Popover>
                </Avatar>
                <Link to={{pathname: "/x/new", state: {background: location, component: "newStory"}}}>
-                  <NavItem css={[tw`py-2 px-3 ml-4 rounded-md`]}>
+                  <NavItem css={[tw`py-2 px-3 ml-1 rounded-md`]}>
                      <FeatherIcon css={[tw`fill-current text-white w-4 h-4 mr-2`]}/>
                      New Story
                   </NavItem>
@@ -53,9 +57,11 @@ const Navbar = () => {
 
 const ProfilePopover = () => (
    <ProfilePopoverWrapper>
-      <ProfilePopoverItem css={[tw`font-semibold`]}>
-         Jonathan Buckenbeur
-      </ProfilePopoverItem>
+      <Link to="/unorthodev">
+         <ProfilePopoverItem css={[tw`font-semibold`]}>
+            Jonathan Buckenbeur
+         </ProfilePopoverItem>
+      </Link>
       <ProfilePopoverItem>Edit Profile</ProfilePopoverItem>
       <Bucket as="span" css={[tw`px-8 block`]}>
          <Divider css={[tw`my-3`]}/>

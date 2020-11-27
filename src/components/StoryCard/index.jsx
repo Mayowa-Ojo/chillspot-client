@@ -4,7 +4,7 @@ import tw from "twin.macro";
 
 import { CardWrapper, CardOverlay, CardThumbnail, CardDetails } from "./styles";
 import { Text, FlexBox, Bucket, Avatar, Image } from "../../components";
-import { ReactComponent as StarIcon } from "../../assets/svg/star.svg";
+import { ReactComponent as EyeIcon } from "../../assets/svg/eye.svg";
 import { ReactComponent as HeartIcon } from "../../assets/svg/heart.svg";
 import { ReactComponent as SaveIcon } from "../../assets/svg/save.svg";
 import { ReactComponent as MarkerIcon } from "../../assets/svg/marker.svg";
@@ -22,8 +22,8 @@ const StoryCard = ({ isSlider, showActionBar, isSmall }) => {
                   <Bucket>
                      <Text css={[tw`font-semibold text-white`]}>Niagara Falls</Text>
                      <Bucket as="span" css={[tw`text-white text-c-12 font-medium inline-flex items-center`]}>
-                        <StarIcon css={[tw`fill-current text-white w-3 h-3 mr-1`, "margin-bottom: 1px;" ]}/>
-                        4.5
+                        <EyeIcon css={[tw`fill-current text-white mr-1`, "margin-bottom: 1px;" ]}/>
+                        236
                      </Bucket>
                   </Bucket>
 
