@@ -8,6 +8,7 @@ import { ReactComponent as KebabMenuIcon } from "../../assets/svg/kebab-menu.svg
 import { ReactComponent as ExclamationCircleIcon } from "../../assets/svg/exclamation-circle.svg";
 import { ReactComponent as BlockIcon } from "../../assets/svg/block.svg";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
+import { ReactComponent as CogIcon } from "../../assets/svg/cog.svg";
 import { ReactComponent as NoContentIllustration } from "../../assets/svg/no-content.svg";
 
 const Profile = () => {
@@ -23,7 +24,10 @@ const Profile = () => {
                <Text css={[tw`text-2xl font-bold mt-2`]}>Jonathan Buckenbeur</Text>
                <Text css={[tw`text-c-18`]}>Travel blogger</Text>
                <FlexBox css={[tw`justify-start mt-4`]}>
-                  <ProfileButton isTransparent>Edit Profile</ProfileButton>
+                  <ProfileButton isTransparent>
+                     <CogIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 mr-2`]}/>
+                     Edit Profile
+                  </ProfileButton>
                   <ProfileButton>
                      <UserFriendsIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 mr-2`]}/>
                      Follow
