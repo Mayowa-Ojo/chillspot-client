@@ -1,20 +1,69 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import tw from "twin.macro";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
+import httpRequest from "../../services/http";
+import LocalStorage from "../../utils/localstorage";
+import types from "../../store/types";
+import { requestEndpoints } from "../../constants";
+import { StoreContext } from "../../store";
 import { FormInput, FormInputBox, FormLabel, FormWrapper } from "./styles";
 import { Bucket, Button, Divider, FlexBox, Image, Text } from "../../components";
-import { ReactComponent as TwitterIcon } from "../../assets/svg/twitterAlt.svg"
-import { ReactComponent as GoogleIcon } from "../../assets/svg/google.svg"
+import { ReactComponent as TwitterIcon } from "../../assets/svg/twitterAlt.svg";
+import { ReactComponent as GoogleIcon } from "../../assets/svg/google.svg";
 
-const Signup = () => {
+const ls = new LocalStorage();
+
+const Signup = ({ history }) => {
+   const context = useContext(StoreContext);
+   const { dispatch } = context;
+
    const { register, handleSubmit: handleValidation, errors } = useForm({
       mode: "onBlur"
    });
 
-   const handleSubmit = (data) => {
-      console.log(data);
+   const handleSubmit = async (data) => {
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: response } = await httpRequest(requestEndpoints.auth.signUp, {
+            method: "POST",
+            data: { ...data }
+         });
+
+         ls.set("user", {
+            id: response.data.user._id,
+            email: response.data.user.email,
+            token: response.data.token
+         });
+
+         dispatch({
+            namespace: "auth",
+            type: types.SET_USER,
+            payload: { ...response.data.user }
+         });
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+
+         history.push("/stories");
+
+         console.log("[INFO]: user signed up...")
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+         console.error(err.response || err.message);
+      }
    }
 
    return (
