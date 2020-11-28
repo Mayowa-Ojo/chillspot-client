@@ -4,12 +4,13 @@ import "tippy.js/animations/scale-subtle.css";
 
 import { TooltipWrapper } from './styles';
 
-const Tooltip = ({ content, placement, children }) => {
+const Tooltip = ({ content, placement, children, isLight }) => {
    return (
       <TooltipWrapper
          content={content}
          placement={placement}
          animation="scale-subtle"
+         isLight={isLight}
       >
          {children}
       </TooltipWrapper>
