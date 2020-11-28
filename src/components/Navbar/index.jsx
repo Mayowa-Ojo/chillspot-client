@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import tw from "twin.macro";
 
 import { Nav, NavItem, ProfilePopoverItem, ProfilePopoverWrapper, SearchBox, SearchInput } from "./styles";
@@ -11,11 +11,27 @@ import { ReactComponent as HeartIcon } from "../../assets/svg/heart.svg";
 import { ReactComponent as FolderIcon } from "../../assets/svg/folder.svg";
 import { ReactComponent as ExitIcon } from "../../assets/svg/exit.svg";
 import { StoreContext } from "../../store";
+import LocalStorage from "../../utils/localstorage";
+import types from "../../store/types";
+
+const ls = new LocalStorage();
 
 const Navbar = () => {
    const location = useLocation();
+   const history = useHistory();
    const context = useContext(StoreContext);
-   const { state: { auth }} = context;
+   const { state: { auth }, dispatch } = context;
+
+   const handleLogout = () => {
+      ls.delete("user");
+
+      dispatch({
+         namespace: "auth",
+         type: types.REVOKE_USER
+      });
+
+      history.push("/")
+   }
 
    return (
       <Nav hasShadow={location.pathname !== "/"} hidden={location.pathname === "/login" || location.pathname === "/signup"}>
@@ -39,7 +55,7 @@ const Navbar = () => {
                   <NavItem isTransparent css={[tw`-mr-2`]}><Link to="/stories">Stories</Link></NavItem>
                }
                <Avatar css={[tw`w-8 h-8 mx-8 cursor-pointer`]}>
-                  <Popover placement="bottom" content={<ProfilePopover />}>
+                  <Popover placement="bottom" content={<ProfilePopover handleLogout={handleLogout}/>}>
                      <Image src="https://uifaces.co/our-content/donated/n4Ngwvi7.jpg" alt="profile image"/>
                   </Popover>
                </Avatar>
@@ -52,10 +68,10 @@ const Navbar = () => {
             </Bucket>
          }
       </Nav>
-   )
+   );
 }
 
-const ProfilePopover = () => (
+const ProfilePopover = ({handleLogout}) => (
    <ProfilePopoverWrapper>
       <Link to="/unorthodev">
          <ProfilePopoverItem css={[tw`font-semibold`]}>
@@ -78,11 +94,11 @@ const ProfilePopover = () => (
          <Divider css={[tw`my-3`]}/>
       </Bucket>
       <ProfilePopoverItem>Account Settings</ProfilePopoverItem>
-      <ProfilePopoverItem css={[tw`w-full flex items-center`]}>
+      <ProfilePopoverItem css={[tw`w-full flex items-center`]} onClick={handleLogout}>
          <ExitIcon css={[tw`fill-current text-chill-gray4 mr-2`]}/>
          Sign Out
       </ProfilePopoverItem>
    </ProfilePopoverWrapper>
-)
+);
 
 export default Navbar;
