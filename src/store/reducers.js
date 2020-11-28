@@ -14,17 +14,26 @@ const rootReducer = (state, action) => {
       case "modal":
          return modalReducer(state, action);
 
+      case "global":
+         return globalReducer(state, action);
+
       default:
          throw new Error("Invalid namespace for reducer");
    }
-
-
 }
 
 const authReducer = (state, action) => {
    switch (action.type) {
       case types.SET_USER:
-         return { ...state, users: { isLoggedIn: true, ...action.payload }}
+         return { 
+            ...state,
+            auth: { 
+               isLoggedIn: true,
+               profile: { ...action.payload }
+            }
+         };
+      case types.REVOKE_USER:
+         return { ...state, auth: { isLoggedIn: false, profile: {}}};
 
       default:
          throw new Error("Invalid action type for auth reducer");
@@ -46,6 +55,16 @@ const modalReducer = (state, action) => {
 
       case types.TOGGLE_MODAL:
          return { ...state, modal: { ...state.modal, isOpen: !state.modal.isOpen }};
+   
+      default:
+         throw new Error("Invalid action type for modal reducer");
+   }
+}
+
+const globalReducer = (state, action) => {
+   switch (action.type) {
+      case types.SET_STATUS:
+         return { ...state, global: { ...state.global, status: action.payload }};
    
       default:
          throw new Error("Invalid action type for modal reducer");
