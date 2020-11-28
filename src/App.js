@@ -2,7 +2,7 @@ import { GlobalStyles } from "twin.macro";
 import { Route , Switch, useLocation } from "react-router-dom";
 
 import { Home, Stories, Login, Signup, NotFound, Profile } from "./containers";
-import { Navbar, ModalWrapper, Footer } from "./components";
+import { Navbar, ModalWrapper, Footer, Loading } from "./components";
 import Store from "./store";
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
            <Route path="/x/:modal" children={<ModalWrapper component={location.state.component}/>} />
          }
          <Footer />
+         <Loading />
       </Store>
    );
 }
