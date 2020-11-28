@@ -149,7 +149,7 @@ const Signup = ({ history }) => {
                               minLength: { value: 6, message: "at least 6 characters"}
                               })
                            }
-                           css={[tw`text-c-24`]}
+                           css={["font-family: system-ui"]}
                         />
                      </FormInputBox>
                      <ValidationError message={errors?.password?.message || "this field is required"} visible={!!errors.password}/>

@@ -122,7 +122,7 @@ const Login = ({ history }) => {
                            placeholder=""
                            type="password"
                            ref={register({ required: true })}
-                           css={[tw`text-c-24`]}
+                           css={["font-family: system-ui"]}
                         />
                      </FormInputBox>
                      <ValidationError message={errors?.password?.message || "this field is required"} visible={!!errors.password}/>
