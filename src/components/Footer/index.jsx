@@ -12,7 +12,7 @@ import { ReactComponent as HeartIcon } from "../../assets/svg/heart.svg";
 
 const Footer = () => {
    const location = useLocation();
-   const showFooter = !["/login", "signup", "/"].includes(location.pathname);
+   const showFooter = !["/login", "/signup", "/"].includes(location.pathname);
 
    return (
       showFooter &&
