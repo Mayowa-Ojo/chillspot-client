@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 import { Picker } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 
