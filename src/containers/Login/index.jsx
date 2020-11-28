@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import tw from "twin.macro";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import httpRequest from "../../services/http";
@@ -15,7 +15,11 @@ import { ReactComponent as GoogleIcon } from "../../assets/svg/google.svg";
 
 const ls = new LocalStorage();
 
-const Login = ({ history }) => {
+const Login = () => {
+   const location = useLocation();
+   const history = useHistory();
+   const { from } = location.state || { from: { pathname: "/" }};
+
    const context = useContext(StoreContext);
    const { dispatch } = context;
 
@@ -53,7 +57,7 @@ const Login = ({ history }) => {
             payload: "done"
          });
 
-         history.push("/stories");
+         history.replace(from);
 
          console.log("[INFO]: user logged in...")
       } catch (err) {
