@@ -6,12 +6,15 @@ export const StoreContext = createContext({});
 
 const initialState = {
    auth: {
-      isLoggedIn: true,
+      isLoggedIn: false,
       profile: {}
    },
    modal: {
       isOpen: false,
       component: ""
+   },
+   global: {
+      status: "idle" // ["loading", "idle", "error", "done"]
    }
 }
 
