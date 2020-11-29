@@ -16,4 +16,6 @@ export { default as EmojiPicker } from "./EmojiPicker";
 export { default as Popover } from "./Popover";
 export { default as Editor } from "./Editor";
 export { default as Loading } from "./Loading";
+export { default as ProtectedRoute } from "./ProtectedRoute";
+export { default as Toast } from "./Toast";
 export { default as Footer } from "./Footer";
