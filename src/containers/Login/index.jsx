@@ -70,6 +70,19 @@ const Login = () => {
       }
    }
 
+   React.useEffect(() => {
+      if(from.pathname !== "/") {
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "warning",
+               message: "Please sign in to your account or create a new account."
+            }
+         });
+      }
+   }, []);
+
    return (
       <FlexBox css={[tw`w-full h-screen flex`]}>
          <Bucket css={[tw`w-2/5 h-full`]}>
