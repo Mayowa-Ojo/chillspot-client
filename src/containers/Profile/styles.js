@@ -46,3 +46,22 @@ export const ActiveTabIndicator = styled.span`
 export const NoStoriesPlaceholder = styled.div`
    ${tw`flex flex-col items-center py-20`}
 `;
+
+export const StoriesGridWrapper = styled.div`
+   ${tw`py-12 px-20`}
+
+   ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      gap: 52px 24px;
+      margin: 0 auto;
+   }
+`;
+
+export const FriendsListWrapper = styled.div`
+   ${tw`py-12 px-20`}
+`;
+
+export const FriendsListItem = styled.li`
+   ${tw`pb-8 mt-8 flex items-start border-b border-chill-gray2`}
+`;
