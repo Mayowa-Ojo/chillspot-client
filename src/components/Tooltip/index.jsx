@@ -11,6 +11,7 @@ const Tooltip = ({ content, placement, children, isLight }) => {
          placement={placement}
          animation="scale-subtle"
          isLight={isLight}
+         maxWidth={220}
       >
          {children}
       </TooltipWrapper>
