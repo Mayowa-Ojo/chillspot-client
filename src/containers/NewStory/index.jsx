@@ -116,7 +116,7 @@ const NewStory = () => {
                   <FormField>
                      <Bucket as="span" css={[tw`inline-flex items-center`]}>
                         <FormLabel htmlFor="tags">Tags</FormLabel>
-                        <Tooltip content="select one or more tags" placement="top">
+                        <Tooltip content="Select one or more tags. You can create a new tag if you don't find a match." placement="top">
                            <QuestionMarkIcon css={[tw`fill-current text-chill-gray4 ml-2 text-opacity-75`]}/>
                         </Tooltip>
                      </Bucket>
@@ -144,6 +144,14 @@ const NewStory = () => {
                      <CheckBoxLabel>
                         <CheckBox />
                         <CheckBoxSwitch>Comments are disabled</CheckBoxSwitch>
+                     </CheckBoxLabel>
+                     <CheckBoxLabel>
+                        <CheckBox />
+                        <CheckBoxSwitch>Private
+                           <Tooltip content="This story will be saved in your 'archives' and can only be viewed by you." placement="top">
+                              <QuestionMarkIcon css={[tw`fill-current text-chill-gray4 text-opacity-75 ml-2 w-4 h-4`]} />
+                           </Tooltip>
+                        </CheckBoxSwitch>
                      </CheckBoxLabel>
                   </FormField>
                </FormContainer>

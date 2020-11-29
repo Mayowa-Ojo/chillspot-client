@@ -135,6 +135,7 @@ export const CheckBoxLabel = styled.label`
          display: block;
          width: 30px;
          height: 16.5px;
+         margin-top: 2px;
          background: ${theme`colors.chill.gray3`};
          border: 2px solid ${theme`colors.chill.gray3`};
          border-radius: 11px;
@@ -149,6 +150,7 @@ export const CheckBoxLabel = styled.label`
          position: absolute;
          width: 13px;
          height: 13px;
+         margin-top: 2px;
          background: white;
          border-radius: 50%;
          left: 2px;
@@ -159,7 +161,7 @@ export const CheckBoxLabel = styled.label`
 `;
 
 export const CheckBoxSwitch = styled.span`
-   ${tw`text-c-12 font-semibold text-chill-gray4`}
+   ${tw`text-c-12 font-semibold text-chill-gray4 inline-flex items-center`}
 `;
 
 export const FormSelectBox = styled.div`
