@@ -55,7 +55,7 @@ const modalReducer = (state, action) => {
 
       case types.TOGGLE_MODAL:
          return { ...state, modal: { ...state.modal, isOpen: !state.modal.isOpen }};
-   
+
       default:
          throw new Error("Invalid action type for modal reducer");
    }
@@ -64,10 +64,28 @@ const modalReducer = (state, action) => {
 const globalReducer = (state, action) => {
    switch (action.type) {
       case types.SET_STATUS:
-         return { ...state, global: { ...state.global, status: action.payload }};
-   
+         return { ...state, global: {...state.global, status: action.payload }};
+
+      case types.SHOW_TOAST:
+         return { 
+            ...state,
+            global: {
+               ...state.global,
+               toast: { isActive: true, ...action.payload }
+            }
+         };
+
+      case types.DISMISS_TOAST:
+         return { 
+            ...state,
+            global: {
+               ...state.global,
+               toast: { type: "", message: "", isActive: false }
+            }
+         };
+
       default:
-         throw new Error("Invalid action type for modal reducer");
+         throw new Error("Invalid action type for global reducer");
    }
 }
 

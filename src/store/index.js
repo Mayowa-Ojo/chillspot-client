@@ -14,7 +14,12 @@ const initialState = {
       component: ""
    },
    global: {
-      status: "idle" // ["loading", "idle", "error", "done"]
+      status: "idle", // ["loading", "idle", "error", "done"]
+      toast: {
+         type: "info",
+         message: "",
+         isActive: false
+      }
    }
 }
 
