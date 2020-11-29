@@ -55,7 +55,7 @@ const Navbar = () => {
                   <NavItem isTransparent css={[tw`-mr-2`]}><Link to="/stories">Stories</Link></NavItem>
                }
                <Avatar css={[tw`w-8 h-8 mx-8 cursor-pointer`]}>
-                  <Popover placement="bottom" content={<ProfilePopover handleLogout={handleLogout}/>}>
+                  <Popover placement="bottom" content={<ProfilePopover handleLogout={handleLogout}/>} trigger={'click'}>
                      <Image src="https://uifaces.co/our-content/donated/n4Ngwvi7.jpg" alt="profile image"/>
                   </Popover>
                </Avatar>
