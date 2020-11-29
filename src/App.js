@@ -3,12 +3,13 @@ import { GlobalStyles } from "twin.macro";
 import { Route , Switch, useLocation } from "react-router-dom";
 
 import { Home, Stories, Login, Signup, NotFound, Profile } from "./containers";
-import { Navbar, ModalWrapper, Footer, Loading } from "./components";
+import { Navbar, ModalWrapper, Footer, Loading, Toast } from "./components";
 import { StoreContext } from "./store";
+import { requestEndpoints } from "./constants";
 import types from "./store/types";
 import LocalStorage from "./utils/localstorage";
 import httpRequest from "./services/http";
-import { requestEndpoints } from "./constants";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const ls = new LocalStorage();
 
@@ -20,7 +21,9 @@ function App() {
    const { dispatch } = useContext(StoreContext);
 
    useEffect(() => {
-      reAuthenticateUser(dispatch);
+      (async () => {
+         await reAuthenticateUser(dispatch);
+      })();
    }, [dispatch]);
 
    return (
@@ -32,16 +35,18 @@ function App() {
             <Route path="/" exact component={Home} />
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={Signup} />
-            <Route path="/stories" exact component={Stories} />
-            <Route path="/:username" exact component={Profile} />
+            {/* <Route path="/stories" exact component={Stories} /> */}
+            <ProtectedRoute path="/stories" children={<Stories />} />
+            <ProtectedRoute path="/:username" exact children={<Profile />} />
             <Route path="*" component={NotFound}></Route>
          </Switch>
 
          { background && 
-           <Route path="/x/:modal" children={<ModalWrapper component={location.state.component}/>} />
+           <ProtectedRoute path="/x/:modal" children={<ModalWrapper component={location.state.component}/>} />
          }
          <Footer />
          <Loading />
+         <Toast />
       </>
    );
 }
