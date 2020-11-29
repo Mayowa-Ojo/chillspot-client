@@ -1,16 +1,17 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Redirect, Route } from "react-router-dom";
 
-import { StoreContext } from "../../store";
+import LocalStorage from "../../utils/localstorage";
+
+const ls = new LocalStorage();
 
 const ProtectedRoute = ({children, ...rest}) => {
-   const context = useContext(StoreContext);
-   const { state: { auth }} = context;
+   const { token } = ls.get("user") || {};
 
    return (
       <Route
          {...rest}
-         render={({ location }) => auth.isLoggedIn ?
+         render={({ location }) => token ?
             (
                children
             )
