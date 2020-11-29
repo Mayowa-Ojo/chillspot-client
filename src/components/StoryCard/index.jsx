@@ -10,12 +10,12 @@ import { ReactComponent as SaveIcon } from "../../assets/svg/save.svg";
 import { ReactComponent as MarkerIcon } from "../../assets/svg/marker.svg";
 import { ReactComponent as CommentIcon } from "../../assets/svg/comment.svg";
 
-const StoryCard = ({ isSlider, showActionBar, isSmall }) => {
+const StoryCard = ({ isSlider, showActionBar, isSmall, isTiny }) => {
    const location = useLocation();
 
    return (
       <CardWrapper>
-         <CardThumbnail isSlider={isSlider} isSmall={isSmall}>
+         <CardThumbnail isSlider={isSlider} isSmall={isSmall} isTiny={isTiny}>
             <Link to={{pathname: "/x/story", state: {background: location, component: "story"}}}> {/* TODO: path should reflect slug */}
             <CardOverlay>
                <FlexBox css={[tw`justify-between items-start`]}>
