@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { GlobalStyles } from "twin.macro";
 import { Route , Switch, useLocation } from "react-router-dom";
 
-import { Home, Stories, Login, Signup, NotFound, Profile } from "./containers";
+import { Home, Stories, Login, Signup, NotFound, Profile, AccountSettings } from "./containers";
 import { Navbar, ModalWrapper, Footer, Loading, Toast } from "./components";
 import { StoreContext } from "./store";
 import { requestEndpoints } from "./constants";
@@ -37,6 +37,7 @@ function App() {
             <Route path="/signup" exact component={Signup} />
             {/* <Route path="/stories" exact component={Stories} /> */}
             <ProtectedRoute path="/stories" children={<Stories />} />
+            <ProtectedRoute path="/account" children={<AccountSettings />} />
             <ProtectedRoute path="/:username" exact children={<Profile />} />
             <Route path="*" component={NotFound}></Route>
          </Switch>
