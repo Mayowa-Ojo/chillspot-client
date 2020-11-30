@@ -78,7 +78,9 @@ const ProfilePopover = ({handleLogout}) => (
             Jonathan Buckenbeur
          </ProfilePopoverItem>
       </Link>
-      <ProfilePopoverItem>Edit Profile</ProfilePopoverItem>
+      <Link to="/account/profile">
+         <ProfilePopoverItem>Edit Profile</ProfilePopoverItem>
+      </Link>
       <Bucket as="span" css={[tw`px-8 block`]}>
          <Divider css={[tw`my-3`]}/>
       </Bucket>
