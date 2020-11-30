@@ -5,4 +5,5 @@ export { default as NewStory } from "./NewStory";
 export { default as Login } from "./Login";
 export { default as Signup } from "./Signup";
 export { default as Profile } from "./Profile";
+export { default as AccountSettings } from "./AccountSettings";
 export { default as NotFound } from "./NotFound";
