@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Switch, Route, Link, useRouteMatch, useLocation } from 'react-router-dom';
 import tw from "twin.macro";
 
 import { Avatar, Bucket, FlexBox, Image, Text, Dropdown, Button, StoryCard } from "../../components";
@@ -23,7 +24,8 @@ import { ReactComponent as NoContentIllustration } from "../../assets/svg/no-con
 import { ReactComponent as LoadingIcon } from "../../assets/svg/loading.svg";
 
 const Profile = () => {
-   const [navItem, setNavItem] = useState("stories");
+   const { path, url } = useRouteMatch();
+   const location = useLocation();
 
    return (
       <ProfileContainer>
@@ -52,36 +54,48 @@ const Profile = () => {
          </ProfileInfo>
          <ProfileNavigation>
             <Bucket as="ul" css={[tw`py-8 flex`]}>
-               <ProfileNavItem onClick={() => setNavItem("stories")} isActive={navItem === "stories"}>
+               <Link to={`${url}/stories`}>
+               <ProfileNavItem isActive={location.pathname.includes("stories")}>
                   <ActiveTabIndicator/>
                   Stories
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>0</Bucket>
                </ProfileNavItem>
-               <ProfileNavItem onClick={() => setNavItem("likes")} isActive={navItem === "likes"}>
+               </Link>
+               <Link to={`${url}/likes`}>
+               <ProfileNavItem isActive={location.pathname.includes("likes")}>
                   <ActiveTabIndicator />
                   Likes
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>22</Bucket>
                </ProfileNavItem>
-               <ProfileNavItem onClick={() => setNavItem("followers")} isActive={navItem === "followers"}>
+               </Link>
+               <Link to={`${url}/followers`}>
+               <ProfileNavItem isActive={location.pathname.includes("followers")}>
                   <ActiveTabIndicator />
                   Followers
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>1,280</Bucket>
                </ProfileNavItem>
-               <ProfileNavItem onClick={() => setNavItem("following")} isActive={navItem === "following"}>
+               </Link>
+               <Link to={`${url}/following`}>
+               <ProfileNavItem isActive={location.pathname.includes("following")}>
                   <ActiveTabIndicator />
                   Following
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>470</Bucket>
                </ProfileNavItem>
-               <ProfileNavItem onClick={() => setNavItem("collection")} isActive={navItem === "collection"}>
+               </Link>
+               <Link to={`${url}/collection`}>
+               <ProfileNavItem isActive={location.pathname.includes("collection")}>
                   <ActiveTabIndicator />
                   Collection
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
                </ProfileNavItem>
-               <ProfileNavItem onClick={() => setNavItem("archives")} isActive={navItem === "archives"}>
+               </Link>
+               <Link to={`${url}/archives`}>
+               <ProfileNavItem isActive={location.pathname.includes("archives")}>
                   <ActiveTabIndicator />
                   Archives
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
                </ProfileNavItem>
+               </Link>
                <Bucket css={[tw`inline-flex flex-auto justify-end -mr-4`]}>
                   <Dropdown 
                      trigger={<FilterDropdownTrigger />}
@@ -90,11 +104,15 @@ const Profile = () => {
                </Bucket>
             </Bucket>
          </ProfileNavigation>
-         { ["stories", "collection", "likes", "archives"].includes(navItem) ?
-            <StoriesGrid />
-            :
-            <FriendsList />
-         }
+
+         <Switch>
+            <Route path={`${path}/stories`} component={StoriesGrid} />
+            <Route path={`${path}/likes`} component={StoriesGrid} />
+            <Route path={`${path}/followers`} component={FriendsList} />
+            <Route path={`${path}/following`} component={FriendsList} />
+            <Route path={`${path}/collection`} component={StoriesGrid} />
+            <Route path={`${path}/archives`} component={StoriesGrid} />
+         </Switch>
          {/* <NoStoriesPlaceholder>
             <NoContentIllustration />
             <Text css={[tw`text-c-18 font-semibold mt-10`]}>You haven't created any stories yet</Text>
