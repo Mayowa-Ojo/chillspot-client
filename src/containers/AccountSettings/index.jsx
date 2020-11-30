@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Switch, Route, Link, useRouteMatch } from 'react-router-dom';
+import React from 'react';
+import { Switch, Route, Link, useRouteMatch, useLocation } from 'react-router-dom';
 import tw from "twin.macro";
 
 import * as Styles from "./styles";
@@ -7,14 +7,14 @@ import { FlexBox, Avatar, Image, Text, Bucket, Button, Divider } from "../../com
 import { ReactComponent as ExclamationTriangle } from "../../assets/svg/exclamation-triangle-alt.svg";
 
 const AccountSettings = () => {
-   const [navItem, setNavItem] = useState("profile");
    const { path, url } = useRouteMatch();
+   const { pathname } = useLocation();
 
    const getHeaderLabel = () => {
-      switch(navItem) {
+      switch(pathname.split("/")[2]) {
          case "profile":
             return "Edit Profile";
-         case "account":
+         case "settings":
             return "Account Settings";
          case "password":
             return "Password";
@@ -24,10 +24,10 @@ const AccountSettings = () => {
    }
 
    const getHeaderDescription = () => {
-      switch(navItem) {
+      switch(pathname.split("/")[2]) {
          case "profile":
             return "Setup your chillspot presence";
-         case "account":
+         case "settings":
             return "Manage your account";
          case "password":
             return "Manage your password";
@@ -57,26 +57,22 @@ const AccountSettings = () => {
                <Styles.ProfileSideNav>
                   <Bucket as="ul">
                      <Styles.SideNavItem
-                        isActive={navItem === "profile"}
-                        onClick={() => setNavItem("profile")}
+                        isActive={pathname.includes("profile")}
                      >
                         <Link to={`${url}/profile`}>Edit Profile</Link>
                      </Styles.SideNavItem>
                      <Styles.SideNavItem
-                        isActive={navItem === "account"}
-                        onClick={() => setNavItem("account")}
+                        isActive={pathname.includes("settings")}
                      >
                         <Link to={`${url}/settings`}>Account Settings</Link>
                      </Styles.SideNavItem>
                      <Styles.SideNavItem
-                        isActive={navItem === "password"}
-                        onClick={() => setNavItem("password")}
+                        isActive={pathname.includes("password")}
                      >
                         <Link to={`${url}/password`}>Password</Link>
                      </Styles.SideNavItem>
                      <Styles.SideNavItem
-                        isActive={navItem === "notifications"}
-                        onClick={() => setNavItem("notifications")}
+                        isActive={pathname.includes("notifications")}
                      >
                         <Link to={`${url}/notifications`}>Notifications</Link>
                      </Styles.SideNavItem>
