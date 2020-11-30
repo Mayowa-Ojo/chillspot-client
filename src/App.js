@@ -38,7 +38,7 @@ function App() {
             {/* <Route path="/stories" exact component={Stories} /> */}
             <ProtectedRoute path="/stories" children={<Stories />} />
             <ProtectedRoute path="/account" children={<AccountSettings />} />
-            <ProtectedRoute path="/:username" exact children={<Profile />} />
+            <ProtectedRoute path="/:username" children={<Profile />} />
             <Route path="*" component={NotFound}></Route>
          </Switch>
 
