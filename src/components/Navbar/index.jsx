@@ -73,7 +73,7 @@ const Navbar = () => {
 
 const ProfilePopover = ({handleLogout}) => (
    <ProfilePopoverWrapper>
-      <Link to="/unorthodev">
+      <Link to="/unorthodev/stories">
          <ProfilePopoverItem css={[tw`font-semibold`]}>
             Jonathan Buckenbeur
          </ProfilePopoverItem>
@@ -84,18 +84,24 @@ const ProfilePopover = ({handleLogout}) => (
       <Bucket as="span" css={[tw`px-8 block`]}>
          <Divider css={[tw`my-3`]}/>
       </Bucket>
+      <Link to="/unorthodev/likes">
       <ProfilePopoverItem css={[tw`w-full flex items-center`]}>
          <HeartIcon css={[tw`fill-current text-chill-gray4 mr-2 w-4 h-4`]}/>
          My Likes
       </ProfilePopoverItem>
+      </Link>
+      <Link to="/unorthodev/collection">
       <ProfilePopoverItem css={[tw`w-full flex items-center`]}>
          <FolderIcon css={[tw`fill-current text-chill-gray4 mr-2 w-4 h-4`]}/>
-         My Collections
+         My Collection
       </ProfilePopoverItem>
+      </Link>
       <Bucket as="span" css={[tw`px-8 block`]}>
          <Divider css={[tw`my-3`]}/>
       </Bucket>
+      <Link to="/account/settings">
       <ProfilePopoverItem>Account Settings</ProfilePopoverItem>
+      </Link>
       <ProfilePopoverItem css={[tw`w-full flex items-center`]} onClick={handleLogout}>
          <ExitIcon css={[tw`fill-current text-chill-gray4 mr-2`]}/>
          Sign Out
