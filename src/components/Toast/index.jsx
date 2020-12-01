@@ -50,7 +50,7 @@ const Toast = () => {
 }
 
 const ToastWrapper = styled.div(({type}) => [
-   tw`fixed top-0 left-0 w-full h-10 px-4 flex justify-between items-center`,
+   tw`fixed top-0 left-0 w-full h-10 px-4 flex justify-between items-center z-30`,
 
    type === "info" && tw`bg-green-300`,
    type === "warning" && tw`bg-orange-300`,
