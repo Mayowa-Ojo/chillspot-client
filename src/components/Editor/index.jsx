@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import tw from "twin.macro";
 import { createEditor, Editor, Transforms, Text } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
@@ -13,14 +13,8 @@ import { ReactComponent as QuoteIcon } from "../../assets/svg/quote.svg";
 import { ReactComponent as AtIcon } from "../../assets/svg/at.svg";
 import { ReactComponent as EmojiIcon } from "../../assets/svg/emoji.svg";
 
-const ChillEditor = () => {
-   const editor = useMemo(() => withReact(createEditor()), [])
-   const [value, setValue] = useState([
-      {
-         type: 'paragraph',
-         children: [{ text: 'write about your experience...' }],
-      },
-   ]);
+const ChillEditor = ({ editorValue, setEditorValue }) => {
+   const editor = useMemo(() => withReact(createEditor()), []);
 
    const renderElement = useCallback(props => {
       return <Element {...props}/>
@@ -74,11 +68,12 @@ const ChillEditor = () => {
    return (
       <EditorWrapper>
          <EditableBox>
-            <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+            <Slate editor={editor} value={editorValue} onChange={value => setEditorValue(value)}>
                <Editable 
                   renderElement={renderElement}
                   renderLeaf={renderLeaf}
                   onKeyDown={handleKeyEvent}
+                  placeholder="write about your experience..."
                />
             </Slate>
          </EditableBox>
@@ -131,14 +126,6 @@ const ChillEditor = () => {
       </EditorWrapper>
    )
 }
-
-// const DefaultElement = ({attributes, children}) => <p {...attributes}>{children}</p>;
-
-// const CodeElement = ({ attributes, children }) => (
-//    <pre {...attributes}>
-//       <code>{children}</code>
-//    </pre>
-// );
 
 const Leaf = ({attributes, leaf, children}) => (
    <span
