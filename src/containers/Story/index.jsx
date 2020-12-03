@@ -119,7 +119,11 @@ const Story = () => {
          </ActionsToolbarWrapper>
 
          <StoryContainerInner>
-            <FlexBox isCol css={[tw`justify-start mx-auto`, "max-width: 768px"]}>
+            <FlexBox isCol css={[tw`justify-start items-start mx-auto`, "max-width: 768px"]}>
+               <FlexBox css={[tw`justify-start`]}>
+                  <Button css={[tw`px-2 py-1 rounded-md bg-red-100 text-c-12 text-red-300 hover:(bg-red-200 text-red-400)`]}>Park</Button>
+                  <Button css={[tw`px-2 py-1 rounded-md bg-red-100 text-c-12 text-red-300 hover:(bg-red-200 text-red-400) ml-2`]}>Museum</Button>
+               </FlexBox>
                <StoryHeader>
                   <FlexBox css={[tw`justify-start`]}>
                      <Avatar css={[tw`w-12 h-12 cursor-pointer`]}>

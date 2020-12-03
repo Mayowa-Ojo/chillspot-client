@@ -15,7 +15,7 @@ export const StoryContainerInner = styled.div`
 `;
 
 export const StoryHeader = styled.header`
-   ${tw`flex justify-between w-full`}
+   ${tw`flex justify-between w-full mt-4`}
 `;
 
 export const HeaderButton = styled(Button)`
