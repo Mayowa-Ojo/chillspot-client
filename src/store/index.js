@@ -13,6 +13,9 @@ const initialState = {
       isOpen: false,
       component: ""
    },
+   stories: {
+      feed: []
+   },
    global: {
       status: "idle", // ["loading", "idle", "error", "done"]
       toast: {

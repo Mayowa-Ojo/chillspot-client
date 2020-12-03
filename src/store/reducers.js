@@ -44,10 +44,6 @@ const usersReducer = (state, action) => {
 
 }
 
-const storiesReducer = (state, action) => {
-
-}
-
 const modalReducer = (state, action) => {
    switch (action.type) {
       case types.SET_MODAL_COMPONENT:
@@ -58,6 +54,16 @@ const modalReducer = (state, action) => {
 
       default:
          throw new Error("Invalid action type for modal reducer");
+   }
+}
+
+const storiesReducer = (state, action) => {
+   switch (action.type) {
+      case types.SET_STORIES_FEED:
+         return { ...state, stories: { ...state.stories, feed: action.payload }};
+
+      default:
+         throw new Error("Invalid action type for stories reducer");
    }
 }
 
