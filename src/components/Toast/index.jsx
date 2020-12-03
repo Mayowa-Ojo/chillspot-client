@@ -1,25 +1,35 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import tw, { styled } from "twin.macro";
 import { Portal } from "react-portal";
 
+import types from "../../store/types";
+import { StoreContext } from '../../store';
 import { Text } from '..';
 import { ReactComponent as ExclamationCircleIcon } from "../../assets/svg/exclamation-circle.svg";
 import { ReactComponent as ExclamationTriangleIcon } from "../../assets/svg/exclamation-triangle.svg";
 import { ReactComponent as InfoCircleIcon } from "../../assets/svg/info-circle.svg";
 import { ReactComponent as XIcon } from "../../assets/svg/x.svg";
-import { StoreContext } from '../../store';
-import types from "../../store/types";
 
 const Toast = () => {
    const context = useContext(StoreContext);
    const { state: { global: { toast } }, dispatch } = context;
+   const [timer, setTimer] = useState(null);
 
-   const dismissToast = () => {
+   /**
+    * timer is a dependency of the effect below but we dont want
+    * to trigger a re-render everytime timer changes so we store
+    * the value in a ref and pass the ref to the dependency array
+    * instead.
+    */
+   const timerRef = useRef(timer);
+   timerRef.current = timer;
+
+   const dismissToast = useCallback(() => {
       dispatch({
          namespace: "global",
          type: types.DISMISS_TOAST
       });
-   }
+   }, [dispatch]);
 
    const renderIcon = () => {
       switch(toast.type) {
@@ -33,6 +43,16 @@ const Toast = () => {
             return;
       }
    }
+
+   useEffect(() => {
+      if(toast.isActive) {
+         const timerId = setTimeout(dismissToast, 10000);
+         setTimer(timerId);
+         return;
+      }
+
+      clearTimeout(timerRef.current);
+   }, [toast.isActive, dismissToast, timerRef]); // this effect won't run when timerRef changes
 
    return (
       toast.isActive &&
