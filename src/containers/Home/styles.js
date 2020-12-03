@@ -10,9 +10,21 @@ export const Jumbotron = styled.div`
       position: absolute;
       width: 100%;
       height: 100%;
-      background: rgba(13, 12, 45, 0.6);
+      background: rgba(15, 14, 82, 0.8);
       top: 0;
       left: 0;
+   }
+`;
+
+export const JumbotronButton = styled.button`
+   ${tw`bg-white border-2 border-transparent px-6 py-2 mt-8 text-chill-indigo2 text-c-18`}
+   ${tw`font-semibold rounded-md inline-flex items-center hocus:(text-white bg-transparent border-white outline-none)`}
+
+   transition: background .2s ease-in;
+   &:hover {
+      svg {
+         color: ${theme`colors.white`};
+      }
    }
 `;
 

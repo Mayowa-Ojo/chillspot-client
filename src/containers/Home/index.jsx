@@ -4,7 +4,7 @@ import Slick from "react-slick";
 import { Link, useLocation } from 'react-router-dom';
 
 import { Bucket, Button, Image, Text, FlexBox, StoryCard, Tooltip } from "../../components"
-import { Jumbotron, SearchBox , SearchInput, Marker, StorieSlider, SliderArrow, SliderFilter } from './styles';
+import { Jumbotron, SearchBox , SearchInput, Marker, StorieSlider, SliderArrow, SliderFilter, JumbotronButton } from './styles';
 import { ReactComponent as SearchIcon } from "../../assets/svg/search.svg";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
 import { ReactComponent as MarkerIcon } from "../../assets/svg/marker.svg";
@@ -52,20 +52,20 @@ const Home = () => {
       <Bucket css={[tw`bg-chill-gray1 h-full`]}>
          <FlexBox css={[tw`items-start`]}>
             <Jumbotron>
-               <Image src="https://chillspot-s3-bucket.s3.us-east-2.amazonaws.com/images/mountain-1624284_1280.jpg"></Image>
+               <Image src="https://chillspot-s3-bucket.s3.us-east-2.amazonaws.com/images/travel-illustration.png"></Image>
                <FlexBox isCol css={[tw`w-full h-full absolute inset-0 z-10 w-9/12 mx-8 items-start`]}>
                   <Text css={[tw`text-white font-bold text-4xl leading-tight`]}>The most beautiful places in the world!</Text>
-                  <Text css={[tw`text-white font-medium text-c-18`]}>Find your next adventure.</Text>
-                  <Link to="/stories">
-                     <Button css={[tw`bg-chill-indigo2 px-4 mt-4 text-c-18 font-semibold inline-flex items-center`]}>
-                        Explore
-                        <ChevronIcon css={[tw`stroke-current text-white ml-2 w-3 h-3`]}/>
-                     </Button>
+                  <Text css={[tw`text-white font-medium text-c-18 mt-2`]}>Find your next adventure.</Text>
+                  <Link to="/login">
+                     <JumbotronButton>
+                        Get started
+                        <ChevronIcon css={[tw`stroke-current text-chill-indigo2 ml-2 w-3 h-3`]}/>
+                     </JumbotronButton>
                   </Link>
                   { locationMarkers.map((marker, idx) => (
                      <Marker top={marker.top} left={marker.left} key={idx}>
-                        <Tooltip content={marker.location} placement="bottom" isLight>
-                           <MarkerIcon css={[tw`w-5 h-5 fill-current text-white hover:text-yellow-400 cursor-pointer`]}/>
+                        <Tooltip content={marker.location} placement="top" isLight>
+                           <MarkerIcon css={[tw`w-5 h-5 fill-current text-white hover:text-green-400 cursor-pointer`]}/>
                         </Tooltip>
                      </Marker>
                   ))}
