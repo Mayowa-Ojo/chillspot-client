@@ -1,4 +1,4 @@
-import tw, { styled, theme } from "twin.macro";
+import tw, { styled, css, theme } from "twin.macro";
 
 export const UploadContainer = styled.div`
    ${tw`bg-white px-4 relative mt-10`}
@@ -20,39 +20,106 @@ export const ImageUpload = styled.div`
    max-width: 800px;
 `;
 
-export const ImageUploadMain = styled.div`
-   ${tw`relative p-6 flex flex-col items-center justify-center cursor-pointer focus:outline-none`}
+export const ImageUploadMain = styled.div(({ showPreview, url }) => [
+   tw`relative p-6 flex flex-col items-center justify-center overflow-hidden cursor-pointer focus:outline-none`,
 
-   height: 600px;
-   border: dashed 2px ${theme`colors.chill.gray3`};
-   border-radius: 8px;
-   transition: border-color .2s linear;
-   .is-hover {
-      transition: color .2s linear;
-   }
-   &:hover {
-      border-color: ${theme`colors.chill.indigo1`};
+   css`
+      height: 600px;
+      border: dashed 2px ${theme`colors.chill.gray3`};
+      border-radius: 8px;
+      transition: border-color .2s linear;
       .is-hover {
-         color: ${theme`colors.chill.indigo1`};
+         transition: color .2s linear;
       }
-   }
-`;
-
-export const ImageUploadThumbnail = styled.div`
-   ${tw`cursor-pointer focus:outline-none`}
-
-   width: 90px;
-   height: 68px;
-   border: dashed 2px ${theme`colors.chill.gray3`};
-   border-radius: 8px;
-   transition: border-color .2s linear;
-   &:hover {
-      border-color: ${theme`colors.chill.indigo1`};
-      .is-hover {
-         color: ${theme`colors.chill.indigo1`};
+      &:hover {
+         border-color: ${theme`colors.chill.indigo1`};
+         .is-hover {
+            color: ${theme`colors.chill.indigo1`};
+         }
       }
-   }
-`;
+   `,
+
+   showPreview && css`
+      border: none;
+      &::before {
+         content: "";
+         display: block;
+         width: 100%;
+         height: 100%;
+         top: 0;
+         left: 0;
+         position: absolute;
+         z-index: 10;
+         background-image: url(${url});
+         background-repeat: no-repeat;
+         background-position: center;
+         background-size: cover;
+      }
+      span[data-delete-thumbnail] {
+         display: inline-flex;
+         opacity: 0;
+         transition: opacity .2s ease-in;
+      }
+      &:hover {
+         span[data-delete-thumbnail] {
+            opacity: 100%;
+         }
+      }
+   `
+]);
+
+export const ImageUploadThumbnail = styled.div(({ showPreview, url }) => [
+   tw`relative overflow-hidden cursor-pointer focus:outline-none`,
+
+   css`
+      width: 90px;
+      height: 68px;
+      border: dashed 2px ${theme`colors.chill.gray3`};
+      border-radius: 8px;
+      transition: border-color .2s linear;
+      &:hover {
+         border-color: ${theme`colors.chill.indigo1`};
+         .is-hover {
+            color: ${theme`colors.chill.indigo1`};
+         }
+      }
+   `,
+
+   showPreview && css`
+      border: none;
+      &::before {
+         content: "";
+         display: block;
+         width: 100%;
+         height: 100%;
+         top: 0;
+         left: 0;
+         position: absolute;
+         z-index: 10;
+         background-image: url(${url});
+         background-repeat: no-repeat;
+         background-position: center;
+         background-size: cover;
+      }
+      span[data-delete-thumbnail] {
+         display: inline-flex;
+         opacity: 0;
+         transition: opacity .2s ease-in;
+      }
+      &:hover {
+         span[data-delete-thumbnail] {
+            opacity: 100%;
+         }
+      }
+   `
+]);
+
+export const ImageDeleteButton = styled.span(({ isSmall }) => [
+   tw`items-center justify-center w-8 h-8 mr-2 mt-2 rounded-full hidden`,
+   tw`absolute top-0 right-0 cursor-pointer bg-red-400 z-20 hover:bg-red-500`,
+
+   isSmall && tw`w-6 h-6 mt-1 mr-1`
+]);
 
 export const MediaTypes = styled.ul`
    ${tw`flex items-center absolute`}
