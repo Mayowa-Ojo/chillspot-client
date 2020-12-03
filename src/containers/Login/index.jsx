@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import tw from "twin.macro";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import httpRequest from "../../services/http";
@@ -21,7 +21,7 @@ const Login = () => {
    const { from } = location.state || { from: { pathname: "/" }};
 
    const context = useContext(StoreContext);
-   const { dispatch } = context;
+   const { state: { auth }, dispatch } = context;
 
    const { register, handleSubmit: handleValidation, errors } = useForm({
       mode: "onBlur"
@@ -70,20 +70,21 @@ const Login = () => {
       }
    }
 
-   React.useEffect(() => {
+   useEffect(() => {
       if(from.pathname !== "/") {
          dispatch({
             namespace: "global",
             type: types.SHOW_TOAST,
             payload: {
                type: "warning",
-               message: "Please sign in to your account or create a new account."
+               message: "Please sign in to your account or create a new account to access the full features of this app."
             }
          });
       }
-   }, []);
+   }, [dispatch, from]);
 
    return (
+      !auth.isLoggedIn ?
       <FlexBox css={[tw`w-full h-screen flex`]}>
          <Bucket css={[tw`w-2/5 h-full`]}>
             <Image src="https://chillspot-s3-bucket.s3.us-east-2.amazonaws.com/images/4590353.jpg" />
@@ -152,6 +153,8 @@ const Login = () => {
             </FormWrapper>
          </FlexBox>
       </FlexBox>
+      :
+      <Redirect to={{pathname: "/stories"}} />
    );
 }
 
