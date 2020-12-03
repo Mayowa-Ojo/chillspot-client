@@ -12,7 +12,7 @@ const Loading = () => {
 
    return (
       global.status === "loading" && <Portal node={document && document.getElementById('portal-loading')}>
-         <FlexBox css={[tw`w-full h-full absolute inset-0 bg-black bg-opacity-50 z-10`]}>
+         <FlexBox css={[tw`w-screen h-screen absolute inset-0 bg-black bg-opacity-50 z-30`]}>
             <LoadingSpinner />
          </FlexBox>
       </Portal>
