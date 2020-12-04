@@ -14,7 +14,8 @@ const initialState = {
       component: ""
    },
    stories: {
-      feed: []
+      feed: [],
+      currentStory: null
    },
    global: {
       status: "idle", // ["loading", "idle", "error", "done"]

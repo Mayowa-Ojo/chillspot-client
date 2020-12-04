@@ -62,6 +62,9 @@ const storiesReducer = (state, action) => {
       case types.SET_STORIES_FEED:
          return { ...state, stories: { ...state.stories, feed: action.payload }};
 
+      case types.SET_CURRENT_STORY:
+         return { ...state, stories: { ...state.stories, currentStory: action.payload }};
+
       default:
          throw new Error("Invalid action type for stories reducer");
    }
