@@ -18,4 +18,5 @@ export { default as Editor } from "./Editor";
 export { default as Loading } from "./Loading";
 export { default as ProtectedRoute } from "./ProtectedRoute";
 export { default as Toast } from "./Toast";
+export { default as DialogBox } from "./DialogBox";
 export { default as Footer } from "./Footer";
