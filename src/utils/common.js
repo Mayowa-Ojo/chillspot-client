@@ -3,6 +3,8 @@ import escapeHtml from "escape-html";
 
 export const serializer = (value) => {
    const serialize = node => {
+      if(node.bold) return `<strong>${escapeHtml(node.text)}</strong>`;
+      if(node.italic) return `<em>${escapeHtml(node.text)}</em>`;
       if (Text.isText(node)) {
          return escapeHtml(node.text)
       }
