@@ -20,3 +20,5 @@ export { default as ProtectedRoute } from "./ProtectedRoute";
 export { default as Toast } from "./Toast";
 export { default as DialogBox } from "./DialogBox";
 export { default as Footer } from "./Footer";
+export { default as NoContentPlaceholder } from "./NoContentPlaceholder";
+export { default as ErrorFallback } from "./ErrorFallback";
