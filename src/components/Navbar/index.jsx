@@ -55,8 +55,8 @@ const Navbar = () => {
                   <NavItem isTransparent css={[tw`-mr-2`]}><Link to="/stories">Stories</Link></NavItem>
                }
                <Avatar css={[tw`w-8 h-8 mx-8 cursor-pointer`]}>
-                  <Popover placement="bottom" content={<ProfilePopover handleLogout={handleLogout}/>} trigger={'click'}>
-                     <Image src="https://uifaces.co/our-content/donated/n4Ngwvi7.jpg" alt="profile image"/>
+                  <Popover placement="bottom" content={<ProfilePopover handleLogout={handleLogout} profile={auth.profile}/>} trigger={'click'}>
+                     <Image src={auth.profile.avatar.url} alt="profile image"/>
                   </Popover>
                </Avatar>
                <Link to={{pathname: "/x/new", state: {background: location, component: "newStory"}}}>
@@ -71,11 +71,11 @@ const Navbar = () => {
    );
 }
 
-const ProfilePopover = ({handleLogout}) => (
+const ProfilePopover = ({handleLogout, profile}) => (
    <ProfilePopoverWrapper>
-      <Link to="/u/unorthodev/stories">
+      <Link to={`/u/${profile.username}/stories`}>
          <ProfilePopoverItem css={[tw`font-semibold`]}>
-            Jonathan Buckenbeur
+            {profile.firstname} {profile.lastname}
          </ProfilePopoverItem>
       </Link>
       <Link to="/account/profile">
