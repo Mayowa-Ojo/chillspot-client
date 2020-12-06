@@ -1,13 +1,25 @@
-import React from 'react';
-import { Switch, Route, Link, useRouteMatch, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useContext } from "react";
+import { Switch, Route, Link, useRouteMatch, useLocation, useParams } from "react-router-dom";
 import tw from "twin.macro";
 
-import { Avatar, Bucket, FlexBox, Image, Text, Dropdown, Button, StoryCard } from "../../components";
+import { StoreContext } from "../../store";
+import types from "../../store/types";
+import httpRequest from "../../services/http";
+import { requestEndpoints } from "../../constants";
+import { 
+   Avatar,
+   Bucket,
+   FlexBox,
+   Image,
+   Text,
+   Dropdown,
+   Button,
+   StoryCard,
+   NoContentPlaceholder } from "../../components";
 import { 
    ActiveTabIndicator,
    FriendsListItem,
    FriendsListWrapper,
-   NoStoriesPlaceholder,
    ProfileButton,
    ProfileContainer,
    ProfileInfo,
@@ -20,31 +32,147 @@ import { ReactComponent as ExclamationCircleIcon } from "../../assets/svg/exclam
 import { ReactComponent as BlockIcon } from "../../assets/svg/block.svg";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
 import { ReactComponent as CogIcon } from "../../assets/svg/cog.svg";
-import { ReactComponent as NoContentIllustration } from "../../assets/svg/no-content.svg";
-import { ReactComponent as LoadingIcon } from "../../assets/svg/loading.svg";
 
 const Profile = () => {
    const { path, url } = useRouteMatch();
    const location = useLocation();
+   const params = useParams()
+   const username = params["username"];
+   const context = useContext(StoreContext);
+   const { state: { users: { currentUser }, auth, global }, dispatch } = context;
+   const activeTab = location.pathname.split("/")[3];
+
+   const fetchUser = useCallback(async () => {
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: response } = await httpRequest(
+            requestEndpoints.users.oneByQuery(`q=${username}`), {
+            method: "GET"
+         });
+
+         const { data: storiesByUserResponse } = await httpRequest(
+            requestEndpoints.users.stories(response.data.user._id), {
+            method: "GET"
+         });
+
+         const user = { ...response.data.user, stories: storiesByUserResponse.data.stories };
+
+         dispatch({
+            namespace: "users",
+            type: types.SET_CURRENT_USER,
+            payload: user
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+         console.error(err.response || err.message);
+      }
+   }, [dispatch, username]);
+
+   const fetchMoreUserData = useCallback(async () => {
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: response } = await httpRequest(
+            requestEndpoints.users.moreData(currentUser._id, activeTab), {
+            method: "GET"
+         });
+
+         dispatch({
+            namespace: "users",
+            type: types.SET_MORE_USER_DATA,
+            payload: response.data[activeTab],
+            key: activeTab
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+         console.error(err.response || err.message);
+      }
+   }, [currentUser, dispatch, activeTab]);
+
+   useEffect(() => {
+      void async function() {
+         await fetchUser();
+      }();
+   }, [fetchUser]);
+
+   useEffect(() => {
+      if(activeTab === "stories") return;
+      void async function() {
+         await fetchMoreUserData();
+      }();
+   }, [activeTab]);
 
    return (
+      global.status === "done" && currentUser &&
       <ProfileContainer>
          <ProfileInfo>
             <Avatar css={[tw`w-32 h-32`]}>
-               <Image src="https://uifaces.co/our-content/donated/n4Ngwvi7.jpg" alt="profile image" />
+               <Image src={currentUser.avatar.url} alt="profile image" />
             </Avatar>
             <FlexBox isCol css={[tw`items-start justify-start ml-10`]}>
-               <Text css={[tw`text-2xl font-bold mt-2`]}>Jonathan Buckenbeur</Text>
-               <Text css={[tw`text-c-18`]}>Travel blogger</Text>
+               <Text css={[tw`text-2xl font-bold mt-2`]}>{currentUser.firstname} {currentUser.lastname}</Text>
+               <Text css={[tw`text-c-18`]}>{currentUser.bio}</Text>
                <FlexBox css={[tw`justify-start mt-4`]}>
-                  <ProfileButton isTransparent>
-                     <CogIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 mr-2`]}/>
-                     Edit Profile
-                  </ProfileButton>
-                  <ProfileButton>
-                     <UserFriendsIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 mr-2`]}/>
-                     Follow
-                  </ProfileButton>
+                  {currentUser.username === auth.profile.username ?
+                     <Link to="/account/profile">
+                     <ProfileButton isTransparent>
+                        <CogIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 mr-2`]}/>
+                        Edit Profile
+                     </ProfileButton>
+                     </Link>
+                     :
+                     <ProfileButton>
+                        <UserFriendsIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 mr-2`]}/>
+                        Follow
+                     </ProfileButton>
+                  }
                   <Dropdown 
                      trigger={<MenuDropdownTrigger />}
                      content={<MenuDropdownContent />}
@@ -53,46 +181,46 @@ const Profile = () => {
             </FlexBox>
          </ProfileInfo>
          <ProfileNavigation>
-            <Bucket as="ul" css={[tw`py-8 flex`]}>
+            <Bucket as="ul" css={[tw`py-8 flex items-center`]}>
                <Link to={`${url}/stories`}>
-               <ProfileNavItem isActive={location.pathname.includes("stories")}>
+               <ProfileNavItem isActive={activeTab === "stories"}>
                   <ActiveTabIndicator/>
                   Stories
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>0</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/likes`}>
-               <ProfileNavItem isActive={location.pathname.includes("likes")}>
+               <ProfileNavItem isActive={activeTab === "likes"}>
                   <ActiveTabIndicator />
                   Likes
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>22</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/followers`}>
-               <ProfileNavItem isActive={location.pathname.includes("followers")}>
+               <ProfileNavItem isActive={activeTab === "followers"}>
                   <ActiveTabIndicator />
                   Followers
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>1,280</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/following`}>
-               <ProfileNavItem isActive={location.pathname.includes("following")}>
+               <ProfileNavItem isActive={activeTab === "following"}>
                   <ActiveTabIndicator />
                   Following
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>470</Bucket>
                </ProfileNavItem>
                </Link>
-               <Link to={`${url}/collection`}>
-               <ProfileNavItem isActive={location.pathname.includes("collection")}>
+               <Link to={`${url}/collections`}>
+               <ProfileNavItem isActive={activeTab === "collections"}>
                   <ActiveTabIndicator />
-                  Collection
+                  Collections
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
                </ProfileNavItem>
                </Link>
-               <Link to={`${url}/archives`}>
-               <ProfileNavItem isActive={location.pathname.includes("archives")}>
+               <Link to={`${url}/archive`}>
+               <ProfileNavItem isActive={activeTab === "archive"}>
                   <ActiveTabIndicator />
-                  Archives
+                  Archive
                   <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
                </ProfileNavItem>
                </Link>
@@ -106,71 +234,65 @@ const Profile = () => {
          </ProfileNavigation>
 
          <Switch>
-            <Route path={`${path}/stories`} component={StoriesGrid} />
-            <Route path={`${path}/likes`} component={StoriesGrid} />
-            <Route path={`${path}/followers`} component={FriendsList} />
-            <Route path={`${path}/following`} component={FriendsList} />
-            <Route path={`${path}/collection`} component={StoriesGrid} />
-            <Route path={`${path}/archives`} component={StoriesGrid} />
+            <Route path={`${path}/stories`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
+            <Route path={`${path}/likes`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
+            <Route path={`${path}/followers`} children={<FriendsList currentUser={currentUser} tab={activeTab} />} />
+            <Route path={`${path}/following`} children={<FriendsList currentUser={currentUser} tab={activeTab} />} />
+            <Route path={`${path}/collections`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
+            <Route path={`${path}/archive`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
          </Switch>
-         {/* <NoStoriesPlaceholder>
-            <NoContentIllustration />
-            <Text css={[tw`text-c-18 font-semibold mt-10`]}>You haven't created any stories yet</Text>
-            <Button css={[tw`mt-4 py-2 px-4 bg-chill-indigo2 rounded-lg`]}>Create your first story</Button>
-         </NoStoriesPlaceholder> */}
-
-         <FlexBox css={[tw`mt-12`]}>
-            <LoadingIcon css={[tw`w-12 h-12 mr-4`]} />
-            <Text css={[tw`font-semibold`]}>Loading more...</Text>
-         </FlexBox>
       </ProfileContainer>
    );
 }
 
-const StoriesGrid = () => {
+const StoriesGrid = ({ currentUser, tab }) => {
    return (
+      currentUser[tab].length < 1 ?
+      <NoContentPlaceholder message={`No ${tab} to display`} action={{text: "Refresh"}} />
+      :
       <StoriesGridWrapper>
          <Bucket as="ul">
-            <StoryCard />
-            <StoryCard />
-            <StoryCard />
-            <StoryCard />
-            <StoryCard />
-            <StoryCard />
+            {currentUser[tab].map(story => (
+               <StoryCard story={story} />
+            ))
+            }
          </Bucket>
       </StoriesGridWrapper>
    )
 }
 
-const FriendsList = () => {
+const FriendsList = ({ currentUser, tab }) => {
    return (
+      currentUser[tab].length < 1 ?
+      <NoContentPlaceholder message={`No ${tab} to display`} action={{text: "Refresh"}} />
+      :
       <FriendsListWrapper>
          <Bucket css={[tw`px-16`]}>
             <Text css={[tw`text-c-24 font-semibold`]}>5,756 followers</Text>
             <Bucket as="ul" css={[tw`mt-6`]}>
-               {Array(4).fill().map((_, idx) => (
+               {currentUser[tab].map((user, idx) => (
                   <FriendsListItem key={idx}>
                      <Avatar css={[tw`w-20 h-20`, "min-width: 5rem;"]}>
-                        <Image src="https://randomuser.me/api/portraits/women/89.jpg" alt="user avatar"/>
+                        <Image src={user.avatar.url} alt="user avatar"/>
                      </Avatar>
                      <FlexBox isCol css={[tw`h-full items-start justify-between ml-4`]}>
                         <Bucket as="span">
-                           <Text css={[tw`font-semibold`]}>Tracy Anderson</Text>
-                           <Text>Fulltime traveller and vlogger</Text>
+                           <Text css={[tw`font-semibold`]}>{user.firstname} {user.lastname}</Text>
+                           <Text>{user.bio}</Text>
                         </Bucket>
                         <FlexBox css={[tw`items-start justify-start mt-2`]}>
                            <Button css={[tw`bg-chill-gray2 text-chill-gray4 rounded-md hover:bg-chill-gray3`]}>Follow</Button>
                            <FlexBox isCol css={[tw`items-start ml-4`]}>
-                              <Text css={[tw`text-c-12 font-semibold`]}>23.4K</Text>
+                              <Text css={[tw`text-c-12 font-semibold`]}>{user.followers.length}</Text>
                               <Text css={[tw`text-c-12`]}>followers</Text>
                            </FlexBox>
                         </FlexBox>
                      </FlexBox>
                      <FlexBox css={[tw`justify-start ml-8`]}>
-                        <StoryCard isTiny />
-                        <StoryCard isTiny />
-                        <StoryCard isTiny />
-                        <StoryCard isTiny />
+                        {user.stories.map(story => (
+                           <StoryCard isTiny story={story} />
+                        ))
+                        }
                      </FlexBox>
                   </FriendsListItem>
                ))}

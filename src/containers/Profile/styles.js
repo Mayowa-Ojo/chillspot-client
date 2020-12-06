@@ -43,10 +43,6 @@ export const ActiveTabIndicator = styled.span`
    height: 6px;
 `;
 
-export const NoStoriesPlaceholder = styled.div`
-   ${tw`flex flex-col items-center py-20`}
-`;
-
 export const StoriesGridWrapper = styled.div`
    ${tw`py-12 px-20`}
 
