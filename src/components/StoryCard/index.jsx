@@ -10,20 +10,20 @@ import { ReactComponent as SaveIcon } from "../../assets/svg/save.svg";
 import { ReactComponent as MarkerIcon } from "../../assets/svg/marker.svg";
 import { ReactComponent as CommentIcon } from "../../assets/svg/comment.svg";
 
-const StoryCard = ({ isSlider, showActionBar, isSmall, isTiny }) => {
+const StoryCard = ({ story, isSlider, showActionBar, isSmall, isTiny }) => {
    const location = useLocation();
 
    return (
       <CardWrapper>
-         <CardThumbnail isSlider={isSlider} isSmall={isSmall} isTiny={isTiny}>
-            <Link to={{pathname: "/x/story", state: {background: location, component: "story"}}}> {/* TODO: path should reflect slug */}
+         <CardThumbnail isSlider={isSlider} isSmall={isSmall} isTiny={isTiny} thumbnail={story.thumbnails[0].url}>
+            <Link to={{pathname: `/x/story/${story.slug}`, state: {background: location, component: "story"}}}>
             <CardOverlay>
                <FlexBox css={[tw`justify-between items-start`]}>
-                  <Bucket>
-                     <Text css={[tw`font-semibold text-white`]}>Niagara Falls</Text>
+                  <Bucket css={["max-width: 80%"]}>
+                     <Text css={[tw`font-semibold text-white`]} truncate>{story.title}</Text>
                      <Bucket as="span" css={[tw`text-white text-c-12 font-medium inline-flex items-center`]}>
                         <EyeIcon css={[tw`fill-current text-white mr-1`, "margin-bottom: 1px;" ]}/>
-                        236
+                        {story.views > 0 ? story.views : ""}
                      </Bucket>
                   </Bucket>
 
@@ -35,7 +35,7 @@ const StoryCard = ({ isSlider, showActionBar, isSmall, isTiny }) => {
                <FlexBox css={[tw`justify-between`]}>
                   <Bucket as="span" css={[tw`inline-flex items-center`]}>
                      <MarkerIcon css={[tw`fill-current text-white w-4 h-4`]} />
-                     <Text css={[tw`text-c-12 font-semibold text-white ml-1`]}>Ontario, Canada</Text>
+                     <Text css={[tw`text-c-12 font-semibold text-white ml-1`]}>{story.location}</Text>
                   </Bucket>
                   { !isSlider && <Bucket css={[tw`inline-flex items-center justify-center`]}>
                      <SaveIcon css={[tw`fill-current text-white w-5 h-5`]} />
@@ -48,9 +48,11 @@ const StoryCard = ({ isSlider, showActionBar, isSmall, isTiny }) => {
          { !isSlider && 
             <CardDetails showActionBar={showActionBar}>
                <Avatar>
-                  <Image src="https://images.pexels.com/photos/61100/pexels-photo-61100.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" />
+                  <Image src={story.author.avatar.url} />
                </Avatar>
-               <Text css={[tw`font-semibold ml-2 flex-auto`]}>Anna Schoger</Text>
+               <Text css={[tw`font-semibold ml-2 flex-auto`]} truncate>
+                  {story.author.firstname} {story.author.lastname}
+               </Text>
                <Bucket as="span" css={[tw`ml-2 text-c-12 font-medium text-chill-gray4 inline-flex items-center`]}>
                   <CommentIcon css={[tw`fill-current text-chill-gray4 mr-2 `]} />
                   14
