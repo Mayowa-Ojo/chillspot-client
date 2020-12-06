@@ -15,7 +15,11 @@ const initialState = {
    },
    stories: {
       feed: [],
-      currentStory: null
+      currentStory: null,
+      moreStoriesFromUser: []
+   },
+   users: {
+      currentUser: null
    },
    global: {
       status: "idle", // ["loading", "idle", "error", "done"]

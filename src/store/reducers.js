@@ -41,7 +41,27 @@ const authReducer = (state, action) => {
 }
 
 const usersReducer = (state, action) => {
+   switch (action.type) {
+      case types.SET_CURRENT_USER:
+         return { ...state, users: { ...state.users, currentUser: action.payload }};
 
+      case types.SET_MORE_USER_DATA:
+         if(!state.users.currentUser) return;
+
+         return {
+            ...state,
+            users: {
+               ...state.users,
+               currentUser: {
+                  ...state.users.currentUser,
+                  [action.key]: action.payload
+               }
+            }
+         };
+
+      default:
+         throw new Error("Invalid action type for users reducer");
+   }
 }
 
 const modalReducer = (state, action) => {
@@ -64,6 +84,9 @@ const storiesReducer = (state, action) => {
 
       case types.SET_CURRENT_STORY:
          return { ...state, stories: { ...state.stories, currentStory: action.payload }};
+
+      case types.SET_MORE_STORIES_FROM_USER:
+         return { ...state, stories: { ...state.stories, moreStoriesFromUser: action.payload }};
 
       default:
          throw new Error("Invalid action type for stories reducer");
