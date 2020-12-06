@@ -1,6 +1,10 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect, useContext, useCallback } from 'react';
 import tw from "twin.macro";
 
+import httpRequest from "../../services/http";
+import { requestEndpoints } from "../../constants";
+import { StoreContext } from "../../store";
+import types from "../../store/types";
 import {
    FilterCategories,
    FilterCategory,
@@ -47,8 +51,60 @@ const DropdownContent = ({ filterView, setFilterView }) => (
 )
 
 const Stories = () => {
+   const context = useContext(StoreContext);
+   const { state: { stories, global },  dispatch } = context;
    const [filterView, setFilterView] = useState("popular");
    const [filterCategory, setFilterCategory] = useState("all");
+
+   const fetchStories = useCallback(async () => {
+      if(stories.feed.length > 0) return;
+
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: response } = await httpRequest(requestEndpoints.stories.feed, {
+            method: "GET"
+         });
+
+         dispatch({
+            namespace: "stories",
+            type: types.SET_STORIES_FEED,
+            payload: response.data.stories
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+         console.error(err.response || err.message);
+      }
+   }, [dispatch, stories]);
+
+   useEffect(() => {
+      void async function() {
+         await fetchStories();
+      }();
+   }, [fetchStories]);
 
    return (
       <Fragment>
@@ -74,16 +130,14 @@ const Stories = () => {
          </StoriesFilter>
 
          <Bucket css={[tw`px-16`]}>
-            <StoriesGrid>
-               <StoryCard showActionBar />
-               <StoryCard showActionBar />
-               <StoryCard showActionBar />
-               <StoryCard showActionBar />
-               <StoryCard showActionBar />
-               <StoryCard showActionBar />
-               <StoryCard showActionBar />
-               <StoryCard showActionBar />
-            </StoriesGrid>
+            {
+               global.status === "done" &&
+               <StoriesGrid>
+                  {stories.feed.map((story, idx) => (
+                     <StoryCard showActionBar story={story} key={idx}/>
+                  ))}
+               </StoriesGrid>
+            }
 
             <Bucket css={[tw`mt-20`]}>
                <Text css={[tw`text-c-21 font-semibold`]}>You might also like stories from...</Text>
