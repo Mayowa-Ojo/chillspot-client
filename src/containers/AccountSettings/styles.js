@@ -73,3 +73,13 @@ export const FormTextArea = styled.textarea.attrs(() => ({
       box-shadow: 0px 0px 0px 4px rgba(125, 124, 228, 0.1);
    }
 `;
+
+export const FileInput = styled.input.attrs(() => ({
+   type: "file",
+   accept: "image/*",
+}))`
+   display: none;
+   &:focus {
+      outline: none;
+   }
+`;
