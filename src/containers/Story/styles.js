@@ -22,8 +22,11 @@ export const HeaderButton = styled(Button)`
    ${tw`rounded-md bg-chill-gray2 ml-4 px-4 py-2 text-chill-gray4 font-semibold hover:bg-chill-gray3`}
 `;
 
-export const StoryGallery = styled.div`
+export const StoryGallery = styled.div``;
 
+export const StoryTag = styled.button`
+   ${tw`px-2 py-1 rounded bg-chill-indigo1 bg-opacity-25 text-c-12 text-chill-indigo1`}
+   ${tw`text-opacity-75 mr-2 capitalize font-medium`}
 `;
 
 export const StorySlider = styled.div`
@@ -73,6 +76,10 @@ export const StoryContent = styled.div`
    ${tw`mt-4`}
 `;
 
+export const StoryTextBox = styled.div`
+   ${tw`text-c-15 font-medium text-chill-gray4 mt-6`}
+`;
+
 export const StoryComments = styled.div`
    ${tw`mt-8 w-full`}
 `;
@@ -119,7 +126,7 @@ export const MoreStories = styled.div`
 `;
 
 export const StoriesGrid = styled.div`
-   ${tw`mx-auto mt-4 flex flex-wrap justify-between`}
+   ${tw`mx-auto mt-4 flex flex-wrap justify-start`}
 `;
 
 export const ActionsToolbarWrapper = styled.div`
