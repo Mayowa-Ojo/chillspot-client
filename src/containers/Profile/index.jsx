@@ -60,7 +60,12 @@ const Profile = () => {
             method: "GET"
          });
 
-         const user = { ...response.data.user, stories: storiesByUserResponse.data.stories };
+         const stories = storiesByUserResponse.data.stories.map(story => ({
+            ...story,
+            author: response.data.user
+         }))
+
+         const user = { ...response.data.user, stories };
 
          dispatch({
             namespace: "users",
@@ -252,8 +257,8 @@ const StoriesGrid = ({ currentUser, tab }) => {
       :
       <StoriesGridWrapper>
          <Bucket as="ul">
-            {currentUser[tab].map(story => (
-               <StoryCard story={story} />
+            {currentUser[tab].map((story, idx) => (
+               <StoryCard story={story} key={idx}/>
             ))
             }
          </Bucket>
