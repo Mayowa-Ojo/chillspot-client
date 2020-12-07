@@ -83,10 +83,23 @@ const storiesReducer = (state, action) => {
          return { ...state, stories: { ...state.stories, feed: action.payload }};
 
       case types.SET_CURRENT_STORY:
-         return { ...state, stories: { ...state.stories, currentStory: action.payload }};
+         return { ...state, stories: {
+            ...state.stories, currentStory: action.payload
+         }};
 
       case types.SET_MORE_STORIES_FROM_USER:
-         return { ...state, stories: { ...state.stories, moreStoriesFromUser: action.payload }};
+         return { ...state, stories: {
+            ...state.stories, moreStoriesFromUser: action.payload
+         }};
+
+      case types.UPDATE_STORIES_FEED:
+         const copy = [...state.stories.feed];
+         const index = copy.findIndex(el => el._id === action.id);
+         copy.splice(index, 1, action.payload);
+
+         return { ...state, stories: {
+            ...state.stories, feed: copy
+         }};
 
       default:
          throw new Error("Invalid action type for stories reducer");
