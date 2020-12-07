@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import tw from "twin.macro";
 import { Link, useHistory, useLocation, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,7 @@ import { FormInput, FormInputBox, FormLabel, FormWrapper } from "./styles";
 import { Bucket, Button, Divider, FlexBox, Image, Text } from "../../components";
 import { ReactComponent as TwitterIcon } from "../../assets/svg/twitterAlt.svg";
 import { ReactComponent as GoogleIcon } from "../../assets/svg/google.svg";
+import { ReactComponent as EyeIcon } from "../../assets/svg/eye.svg";
 
 const ls = new LocalStorage();
 
@@ -22,6 +23,7 @@ const Login = () => {
 
    const context = useContext(StoreContext);
    const { state: { auth }, dispatch } = context;
+   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
    const { register, handleSubmit: handleValidation, errors } = useForm({
       mode: "onBlur"
@@ -138,10 +140,13 @@ const Login = () => {
                            id="password"
                            name="password"
                            placeholder=""
-                           type="password"
+                           type={isPasswordVisible ? "text" : "password"}
                            ref={register({ required: true })}
                            css={["font-family: system-ui"]}
                         />
+                        <Bucket as="span" css={[tw`cursor-pointer`]} onClick={() => setPasswordVisible(!isPasswordVisible)}>
+                           <EyeIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]} />
+                        </Bucket>
                      </FormInputBox>
                      <ValidationError message={errors?.password?.message || "this field is required"} visible={!!errors.password}/>
                   </Bucket>

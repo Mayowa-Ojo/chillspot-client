@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import tw from "twin.macro";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,7 @@ import { FormInput, FormInputBox, FormLabel, FormWrapper } from "./styles";
 import { Bucket, Button, Divider, FlexBox, Image, Text } from "../../components";
 import { ReactComponent as TwitterIcon } from "../../assets/svg/twitterAlt.svg";
 import { ReactComponent as GoogleIcon } from "../../assets/svg/google.svg";
+import { ReactComponent as EyeIcon } from "../../assets/svg/eye.svg";
 
 const ls = new LocalStorage();
 
@@ -20,6 +21,7 @@ const Signup = () => {
    const history = useHistory();
    const { from } = location.state || { from: { pathname: "/"}};
 
+   const [isPasswordVisible, setPasswordVisible] = useState(false);
    const context = useContext(StoreContext);
    const { dispatch } = context;
 
@@ -147,7 +149,7 @@ const Signup = () => {
                            id="password"
                            name="password"
                            placeholder="6+ characters"
-                           type="password"
+                           type={isPasswordVisible ? "text" : "password"}
                            ref={register({
                               required: true,
                               minLength: { value: 6, message: "at least 6 characters"}
@@ -155,6 +157,9 @@ const Signup = () => {
                            }
                            css={["font-family: system-ui"]}
                         />
+                        <Bucket as="span" css={[tw`cursor-pointer`]} onClick={() => setPasswordVisible(!isPasswordVisible)}>
+                           <EyeIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]} />
+                        </Bucket>
                      </FormInputBox>
                      <ValidationError message={errors?.password?.message || "this field is required"} visible={!!errors.password}/>
                   </Bucket>

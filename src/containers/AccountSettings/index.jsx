@@ -11,6 +11,7 @@ import { requestEndpoints } from "../../constants";
 import { FlexBox, Avatar, Image, Text, Bucket, Button, Divider, DialogBox } from "../../components";
 import { ReactComponent as ExclamationTriangle } from "../../assets/svg/exclamation-triangle-alt.svg";
 import { ReactComponent as ExclamationCircle } from "../../assets/svg/exclamation-circle-alt.svg";
+import { ReactComponent as EyeIcon } from "../../assets/svg/eye.svg";
 
 const AccountSettings = () => {
    const { path, url } = useRouteMatch();
@@ -425,6 +426,9 @@ const Password = ({ context }) => {
       mode: "onBlur"
    });
 
+   const [isPasswordVisible, setPasswordVisible] = useState(false);
+   const [isOldPasswordVisible, setOldPasswordVisible] = useState(false);
+
    const handleUpdate = async (data) => {
       try {
          dispatch({
@@ -477,11 +481,14 @@ const Password = ({ context }) => {
                <Styles.FormLabel>Old Password</Styles.FormLabel>
                <Styles.FormInputBox>
                   <Styles.FormInput
-                     type="password"
+                     type={isOldPasswordVisible ? "text" : "password"}
                      name="oldPassword"
                      css={["font-family: system-ui"]}
                      ref={register({ required: true })}
                   />
+                  <Bucket as="span" css={[tw`cursor-pointer`]} onClick={() => setOldPasswordVisible(!isOldPasswordVisible)}>
+                     <EyeIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]} />
+                  </Bucket>
                </Styles.FormInputBox>
                <ValidationError message={"this field is required"} visible={!!errors.oldPassword}/>
             </Bucket>
@@ -489,11 +496,14 @@ const Password = ({ context }) => {
                <Styles.FormLabel>Password</Styles.FormLabel>
                <Styles.FormInputBox>
                   <Styles.FormInput
-                     type="password"
+                     type={isPasswordVisible ? "text" : "password"}
                      name="password"
                      css={["font-family: system-ui"]}
                      ref={register({ required: true })}
                   />
+                  <Bucket as="span" css={[tw`cursor-pointer`]} onClick={() => setPasswordVisible(!isPasswordVisible)}>
+                     <EyeIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]} />
+                  </Bucket>
                </Styles.FormInputBox>
                <ValidationError message={"this field is required"} visible={!!errors.password}/>
                <Text css={[tw`text-c-12 text-chill-gray4 text-opacity-50 mt-1`]}>Minimum 6 characters</Text> 
