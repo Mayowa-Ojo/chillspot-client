@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect, useCallback } from 'react'
 import tw from "twin.macro";
 import Slick from "react-slick";
 import { Link, useLocation } from 'react-router-dom';
 
+import { StoreContext } from "../../store";
+import types from "../../store/types";
+import httpRequest from "../../services/http";
+import { requestEndpoints } from "../../constants";
 import { Bucket, Button, Image, Text, FlexBox, StoryCard, Tooltip } from "../../components"
 import { Jumbotron, SearchBox , SearchInput, Marker, StorieSlider, SliderArrow, SliderFilter, JumbotronButton } from './styles';
 import { ReactComponent as SearchIcon } from "../../assets/svg/search.svg";
@@ -45,8 +49,60 @@ const Home = () => {
       { location: "39°55’N 32°55’E", top: "50%", left: "50%"}
    ]
 
+   const context = useContext(StoreContext);
+   const { state: { stories, global }, dispatch } = context;
    const [sliderFilter, setSliderFilter] = useState("popular");
    const location = useLocation();
+
+   const fetchStories = useCallback(async () => {
+      if(stories.feed.length > 0) return;
+
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: response } = await httpRequest(requestEndpoints.stories.feed, {
+            method: "GET"
+         });
+
+         dispatch({
+            namespace: "stories",
+            type: types.SET_STORIES_FEED,
+            payload: response.data.stories
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+         console.error(err.response || err.message);
+      }
+   }, [dispatch, stories]);
+
+   useEffect(() => {
+      void async function() {
+         await fetchStories();
+      }();
+   }, [fetchStories]);
 
    return (
       <Bucket css={[tw`bg-chill-gray1 h-full`]}>
@@ -89,9 +145,9 @@ const Home = () => {
                      </Text>
                      <Bucket as="span" css={[tw`inline-block bg-chill-indigo1 w-1 h-1 rounded-full invisible`]}></Bucket>
                   </SliderFilter>
-                  <SliderFilter isActive={sliderFilter === "rating"} onClick={() => setSliderFilter("rating")}>
+                  <SliderFilter isActive={sliderFilter === "following"} onClick={() => setSliderFilter("following")}>
                      <Text css={[tw`text-c-15 font-semibold cursor-pointer`]}>
-                        Rating
+                        Following
                      </Text>
                      <Bucket as="span" css={[tw`inline-block bg-chill-indigo1 w-1 h-1 rounded-full invisible`]}></Bucket>
                   </SliderFilter>
@@ -104,11 +160,13 @@ const Home = () => {
                </FlexBox>
 
                <StorieSlider>
+                  {global.status === "done" &&
                   <Slick {...sliderSettings}>
-                     <StoryCard isSlider />
-                     <StoryCard isSlider />
-                     <StoryCard isSlider />
+                     {stories.feed.map((story, idx) => (
+                        <StoryCard isSlider story={story} key={idx} />
+                     ))}
                   </Slick>
+                  }
                </StorieSlider>
 
                <Link to={{ pathname: "/x/new", state: { background: location, component: "newStory" }}}>
