@@ -3,7 +3,15 @@ import tw from "twin.macro";
 import { createEditor, Editor, Transforms, Text } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 
-import { EditableBox, EditorWrapper, ToolbarButton, ToolbarBox, ToolbarItem, ToolbarItems, VerticalDivider } from './styles';
+import { Tooltip } from ".."
+import {
+   EditableBox,
+   EditorWrapper,
+   ToolbarButton,
+   ToolbarBox,
+   ToolbarItem,
+   ToolbarItems,
+   VerticalDivider } from './styles';
 import { ReactComponent as BoldIcon } from "../../assets/svg/bold.svg";
 import { ReactComponent as ItalicIcon } from "../../assets/svg/italic.svg";
 import { ReactComponent as UnderlineIcon } from "../../assets/svg/underline.svg";
@@ -80,46 +88,62 @@ const ChillEditor = ({ editorValue, setEditorValue }) => {
          <ToolbarBox>
             <ToolbarItems>
                <ToolbarItem>
+                  <Tooltip content="bold" placement="top">
                   <ToolbarButton onClick={(e) => handleToolbarAction(e, "bold")}>
                      <BoldIcon css={[tw`fill-current text-chill-gray4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
                <ToolbarItem>
+                  <Tooltip content="italic" placement="top">
                   <ToolbarButton onClick={(e) => handleToolbarAction(e, "italic")}>
                      <ItalicIcon css={[tw`fill-current text-chill-gray4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
                <ToolbarItem>
+                  <Tooltip content="underline" placement="top">
                   <ToolbarButton onClick={(e) => handleToolbarAction(e, "underline")}>
                      <UnderlineIcon css={[tw`fill-current text-chill-gray4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
                <VerticalDivider />
                <ToolbarItem>
+                  <Tooltip content="ordered list" placement="top">
                   <ToolbarButton onClick={(e) => handleToolbarAction(e, "ordered-list")}>
                      <OrderedListIcon css={[tw`fill-current text-chill-gray4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
                <ToolbarItem>
+                  <Tooltip content="unordered list" placement="top">
                   <ToolbarButton onClick={(e) => handleToolbarAction(e, "unordered-list")}>
                      <UnorderedListIcon css={[tw`fill-current text-chill-gray4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
                <VerticalDivider />
                <ToolbarItem>
+                  <Tooltip content="blockquote" placement="top">
                   <ToolbarButton onClick={(e) => handleToolbarAction(e, "block-quote")}>
                      <QuoteIcon css={[tw`fill-current text-chill-gray4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
                <ToolbarItem>
+                  <Tooltip content="mention" placement="top">
                   <ToolbarButton>
                      <AtIcon css={[tw`fill-current text-chill-gray4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
                <ToolbarItem>
+                  <Tooltip content="emoji" placement="top">
                   <ToolbarButton>
                      <EmojiIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 opacity-75`]}/>
                   </ToolbarButton>
+                  </Tooltip>
                </ToolbarItem>
             </ToolbarItems>
          </ToolbarBox>
