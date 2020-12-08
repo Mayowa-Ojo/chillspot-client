@@ -10,6 +10,7 @@
     "autoprefixer": "^9.8.6",
     "axios": "^0.21.0",
     "babel-plugin-macros": "^2.8.0",
+    "date-fns": "^2.16.1",
     "emoji-mart": "^3.0.0",
     "escape-html": "^1.0.3",
     "postcss-cli": "^8.2.0",
