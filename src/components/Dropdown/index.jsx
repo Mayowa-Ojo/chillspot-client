@@ -4,7 +4,7 @@ import Bucket from '../Styled/Bucket';
 import { ContentWrapper, DropdownWrapper } from './styles'
 import { useClickAway } from "../../utils/hooks";
 
-const Dropdown = ({ trigger, content }) => {
+const Dropdown = ({ trigger, content, placement }) => {
    const [isOpen, setIsOpen] = useState(false);
    
    const toggleDropdown = () => {
@@ -21,7 +21,7 @@ const Dropdown = ({ trigger, content }) => {
          <Bucket onClick={toggleDropdown}>
          { trigger }
          </Bucket>
-         <ContentWrapper isOpen={isOpen}>
+         <ContentWrapper isOpen={isOpen} placement={placement}>
             {content}
          </ContentWrapper>
       </DropdownWrapper>
