@@ -87,6 +87,11 @@ const storiesReducer = (state, action) => {
             ...state.stories, currentStory: action.payload
          }};
 
+      case types.SET_CURRENT_STORY_COMMENTS:
+         return { ...state, stories: {
+            ...state.stories, currentStoryComments: action.payload
+         }};
+
       case types.SET_MORE_STORIES_FROM_USER:
          return { ...state, stories: {
             ...state.stories, moreStoriesFromUser: action.payload

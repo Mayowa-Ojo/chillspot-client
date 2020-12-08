@@ -16,6 +16,7 @@ const initialState = {
    stories: {
       feed: [],
       currentStory: null,
+      currentStoryComments: [],
       moreStoriesFromUser: []
    },
    users: {
