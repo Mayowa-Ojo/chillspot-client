@@ -21,6 +21,7 @@ const EmojiPicker = forwardRef(({ style, setEmoji }, ref) => {
                title=""
                style={style}
                onClick={setEmoji}
+               onSelect={togglePicker}
             />
          </div>
       )
