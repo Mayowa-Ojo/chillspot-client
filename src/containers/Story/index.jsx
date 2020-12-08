@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
 import tw from "twin.macro";
 import Slick from "react-slick";
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { StoreContext } from "../../store";
 import types from "../../store/types";
@@ -20,7 +20,9 @@ import {
    Button,
    StoryCard,
    Tooltip, 
-   EmojiPicker
+   EmojiPicker,
+   NoContentPlaceholder,
+   Dropdown
 } from '../../components';
 import { 
    HeaderButton,
@@ -53,7 +55,7 @@ import { ReactComponent as ShareIcon } from "../../assets/svg/share.svg";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
 import { ReactComponent as EmojiIcon } from "../../assets/svg/emoji.svg";
 import { ReactComponent as UserFriendsIcon } from "../../assets/svg/user-friends.svg";
-import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg";
+import { ReactComponent as KebabMenuIcon } from "../../assets/svg/kebab-menu.svg";
 
 const SliderArrowPrev = ({ onClick }) => (
    <SliderArrow className="slider-control" css={["left: 4px; top: 50%; transform: translate(0, -50%);"]} onClick={onClick}>
@@ -77,7 +79,26 @@ const AppendStoryContent = ({ content }) => {
 const Story = () => {
    const location = useLocation()
    const context = useContext(StoreContext);
-   const { state: { stories: { currentStory, moreStoriesFromUser }, global }, dispatch } = context;
+   const { 
+      state: { 
+         stories: { currentStory, currentStoryComments, moreStoriesFromUser },
+         global,
+         auth: { profile }
+      },
+      dispatch 
+   } = context;
+   const [isLiked, setIsLiked] = useState(false);
+   const [isSaved, setIsSaved] = useState(false);
+   const [isFollowing, setIsFollowing] = useState(false);
+
+   useEffect(() => {
+      if(!currentStory || !profile || !profile.likes) return;
+
+      setIsLiked(profile.likes.includes(currentStory._id));
+      setIsSaved(profile.collections.includes(currentStory._id));
+      setIsFollowing(profile.following.includes(currentStory.author._id));
+   }, []);
+
 
    const SliderPagingFn = (i) => (
       <SliderPaging>
@@ -105,6 +126,57 @@ const Story = () => {
       setComment(e.target.value);
    }
 
+   const handleCommentSubmit = async (e) => {
+      if(comment === "") return;
+
+      if(e.key === "Enter") {
+         try {
+            dispatch({
+               namespace: "global",
+               type: types.SET_STATUS,
+               payload: "loading"
+            });
+   
+            const { data: newCommentResponse } = await httpRequest(
+               requestEndpoints.comments.create(currentStory._id), {
+               method: "POST",
+               data: {
+                  content: comment
+               }
+            });
+
+            dispatch({
+               namespace: "stories",
+               type: types.SET_CURRENT_STORY_COMMENTS,
+               payload: newCommentResponse.data.comments
+            });
+
+            dispatch({
+               namespace: "global",
+               type: types.SET_STATUS,
+               payload: "done"
+            });
+         } catch (err) {
+            dispatch({
+               namespace: "global",
+               type: types.SET_STATUS,
+               payload: "error"
+            });
+   
+            dispatch({
+               namespace: "global",
+               type: types.SHOW_TOAST,
+               payload: {
+                  type: "error",
+                  message: "Oops! something went wrong, please check your network and try again."
+               }
+            });
+            console.error(err.response || err.message);
+         }
+         setComment("");
+      }
+   }
+
    const setEmojiInput = (emoji) => {
       setComment(`${comment}${emoji.native}`);
    }
@@ -124,7 +196,13 @@ const Story = () => {
             method: "GET"
          });
 
-         const { data: moreStoriesResponse } = await httpRequest(requestEndpoints.users.stories(response.data.story.author._id), {
+         const { data: commentsResponse } = await httpRequest(
+            requestEndpoints.stories.comments(response.data.story._id), {
+            method: "GET"
+         });
+
+         const { data: moreStoriesResponse } = await httpRequest(
+            requestEndpoints.users.stories(response.data.story.author._id), {
             method: "GET"
          });
 
@@ -136,6 +214,12 @@ const Story = () => {
             namespace: "stories",
             type: types.SET_CURRENT_STORY,
             payload: response.data.story
+         });
+
+         dispatch({
+            namespace: "stories",
+            type: types.SET_CURRENT_STORY_COMMENTS,
+            payload: commentsResponse.data.comments
          });
 
          dispatch({
@@ -174,6 +258,104 @@ const Story = () => {
       }();
    }, [fetchStory]);
 
+   const handleStoryAction = async (action) => {
+      if(!["save", "like"].includes(action)) return;
+
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: updateStoryResponse } = await httpRequest(
+            requestEndpoints.stories[action](currentStory._id), {
+            method: "PATCH"
+         });
+
+         if(action === "like") {
+            dispatch({
+               namespace: "stories",
+               type: types.SET_CURRENT_STORY,
+               payload: updateStoryResponse.data.story
+            });
+         }
+
+         dispatch({
+            namespace: "auth",
+            type: types.SET_USER,
+            payload: updateStoryResponse.data.user,
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+         console.error(err.response || err.message);
+      }
+   }
+
+   const handleUserAction = async (action) => {
+      if(!["follow", "unfollow"].includes(action)) return;
+
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: updateUserResponse } = await httpRequest(
+            requestEndpoints.users[action](currentStory.author._id), {
+            method: "PATCH"
+         });
+
+         dispatch({
+            namespace: "auth",
+            type: types.SET_USER,
+            payload: updateUserResponse.data.user,
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+         console.error(err.response || err.message);
+      }
+   }
+
    return (
       <StoryWrapper>
          {global.status === "done" && currentStory &&
@@ -186,7 +368,7 @@ const Story = () => {
                <Tooltip content="Comment" placement="left">
                   <ToolbarButton>
                      <CommentIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
-                     <ToolbarButtonIndicator>23</ToolbarButtonIndicator>
+                     <ToolbarButtonIndicator>{currentStoryComments.length}</ToolbarButtonIndicator>
                   </ToolbarButton>
                </Tooltip>
                <Tooltip content="Save" placement="left">
@@ -197,7 +379,7 @@ const Story = () => {
                <Tooltip content="Like" placement="left">
                   <ToolbarButton>
                      <HeartIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
-                     <ToolbarButtonIndicator>175</ToolbarButtonIndicator>
+                     <ToolbarButtonIndicator>{currentStory.likes}</ToolbarButtonIndicator>
                   </ToolbarButton>
                </Tooltip>
                <Tooltip content="Share" placement="left">
@@ -205,11 +387,13 @@ const Story = () => {
                      <ShareIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
                   </ToolbarButton>
                </Tooltip>
-               <Tooltip content="Delete" placement="left">
-                  <ToolbarButton>
-                     <DeleteIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
-                  </ToolbarButton>
-               </Tooltip>
+               {currentStory.author._id === profile._id &&
+                  <Dropdown
+                     content={<ToolbarDropdownContent />}
+                     trigger={<ToolbarDropdownTrigger />}
+                     placement="left"
+                  />
+               }
             </ActionsToolbar>
          </ActionsToolbarWrapper>
 
@@ -222,23 +406,34 @@ const Story = () => {
                   </FlexBox>
                   <StoryHeader>
                      <FlexBox css={[tw`justify-start`]}>
+                        <Link to={`/u/${currentStory.author.username}/stories`}>
                         <Avatar css={[tw`w-12 h-12 cursor-pointer`]}>
                            <Image src={currentStory.author.avatar.url} alt="profile image" />
                         </Avatar>
+                        </Link>
                         <Bucket css={[tw`ml-4`]}>
-                           <Text css={[tw`font-bold cursor-pointer`]}>{currentStory.author.firstname} {currentStory.author.lastname}</Text>
+                           <Link to={`/u/${currentStory.author.username}/stories`}>
+                              <Text css={[tw`font-bold cursor-pointer`]}>
+                                 {currentStory.author.firstname} {currentStory.author.lastname}
+                              </Text>
+                           </Link>
                            <Bucket as="span" css={[tw`inline-flex items-center`]}>
                               <Text>Travel blogger</Text>
                               <Bucket as="span" css={[tw`w-1 h-1 bg-chill-gray4 inline-block rounded-full mx-2`]} />
-                              <Text css={[tw`font-semibold cursor-pointer hover:text-chill-indigo1`]}>Follow</Text>
+                              <Text
+                                 css={[tw`font-semibold cursor-pointer hover:text-chill-indigo1`]}
+                                 onClick={() => handleUserAction(isFollowing ? "unfollow" : "follow")}
+                              >{isFollowing ? "Following" : "Follow"}</Text>
                            </Bucket>
                         </Bucket>
                      </FlexBox>
                      <FlexBox>
-                        <HeaderButton>Save</HeaderButton>
-                        <HeaderButton css={[tw`inline-flex items-center`]}>
+                        <HeaderButton onClick={() => handleStoryAction("save")}>
+                           {isSaved ? "Saved" : "Save"}
+                        </HeaderButton>
+                        <HeaderButton css={[tw`inline-flex items-center`]} onClick={() => handleStoryAction("like")}>
                            <HeartIcon css={[tw`w-4 h-4 fill-current text-chill-gray4 mr-2`]} />
-                           Like
+                           {isLiked ? "Liked" : "Like"}
                         </HeaderButton>
                      </FlexBox>
                   </StoryHeader>
@@ -253,7 +448,12 @@ const Story = () => {
 
                   <StoryContent>
                      <Text css={[tw`text-c-24 font-semibold`]}>{currentStory.title}</Text>
-                     <Bucket as="span" css={[tw`px-2 py-1 inline-block bg-chill-indigo1 bg-opacity-25 text-chill-indigo1 text-c-12 font-semibold mt-1 rounded`]}>{currentStory.location}</Bucket>
+                     <Bucket 
+                        as="span"
+                        css={[tw`px-2 py-1 inline-block bg-chill-indigo1 bg-opacity-25 text-chill-indigo1 text-c-12 font-semibold mt-1 rounded`]}
+                     >
+                        {currentStory.location}
+                     </Bucket>
                      <AppendStoryContent content={currentStory.content}/>
                   </StoryContent>
 
@@ -265,22 +465,34 @@ const Story = () => {
                      </FlexBox>
                      <FlexBox css={[tw`justify-start mt-8`]}>
                         <Avatar css={[tw`w-10 h-10`]}>
-                           <Image src={currentStory.author.avatar.url} alt="profile image"/>
+                           <Image src={profile.avatar.url} alt="profile image"/>
                         </Avatar>
                         <CommentInputBox>
-                           <CommentInput placeholder="Add a comment" value={comment} onChange={handleCommentInput} />
+                           <CommentInput 
+                              placeholder="Add a comment"
+                              value={comment}
+                              onChange={handleCommentInput} 
+                              onKeyDown={handleCommentSubmit}
+                           />
                            <EmojiIcon css={[tw`fill-current text-chill-gray4 absolute cursor-pointer`]} onClick={() => emojiRef.current.toggleEmojiPicker()} />
                            <EmojiPicker style={{position: "absolute", right: 0, top: 50}} ref={emojiRef} setEmoji={setEmojiInput} />
                         </CommentInputBox>
                      </FlexBox>
                      <Bucket css={[tw`mt-8`]}>
-                        <Comment />
-                        <Comment />
+                        {currentStoryComments.length < 1 ?
+                           <NoContentPlaceholder message="No Comments to display" action="Refresh"/>
+                        :
+                           currentStoryComments.map((comment, idx) => (
+                              <Comment comment={comment} key={idx}/>
+                           ))
+                        }
                      </Bucket>
-                     <CommentsFooter>
-                        <Text>View More Comments</Text>
-                        <ChevronIcon css={[tw`w-3 h-3 stroke-current text-chill-gray4 ml-2 transform rotate-90`]} />
-                     </CommentsFooter>
+                     {currentStoryComments.length > 0 &&
+                        <CommentsFooter>
+                           <Text>View More Comments</Text>
+                           <ChevronIcon css={[tw`w-3 h-3 stroke-current text-chill-gray4 ml-2 transform rotate-90`]} />
+                        </CommentsFooter>
+                     }
                   </StoryComments>
                </FlexBox>
 
@@ -288,16 +500,23 @@ const Story = () => {
                   <AuthorDetails>
                      <FlexBox css={[tw`justify-start w-full`]}>
                         <Divider css={[tw`w-auto flex-auto border-t-2 border-chill-gray3`]} />
-                        <Avatar css={[tw`w-20 h-20 mx-5`]}>
-                           <Image src={currentStory.author.avatar.url} alt="user avatar" />
-                        </Avatar>
+                        <Link to={`/u/${currentStory.author.username}/stories`}>
+                           <Avatar css={[tw`w-20 h-20 mx-5`]}>
+                              <Image src={currentStory.author.avatar.url} alt="user avatar" />
+                           </Avatar>
+                        </Link>
                         <Divider css={[tw`w-auto flex-auto border-t-2 border-chill-gray3`]} />
                      </FlexBox>
-                     <Text css={[tw`text-c-24 font-bold mt-5`]}>{currentStory.author.firstname} {currentStory.author.lastname}</Text>
+                     <Link to={`/u/${currentStory.author.username}/stories`}>
+                        <Text css={[tw`text-c-24 font-bold mt-5`]}>{currentStory.author.firstname} {currentStory.author.lastname}</Text>
+                     </Link>
                      <Text css={[tw`text-c-18 mt-2`]}>Travel Blogger</Text>
-                     <Button css={[tw`px-4 py-2 bg-chill-indigo2 rounded-lg mt-3 inline-flex items-center`]}>
+                     <Button
+                        css={[tw`px-4 py-2 bg-chill-indigo2 rounded-lg mt-3 inline-flex items-center`]}
+                        onClick={() => handleUserAction(isFollowing ? "unfollow" : "follow")}
+                     >
                         <UserFriendsIcon css={[tw`fill-current text-white w-4 h-4 mr-2`]} />
-                        Follow
+                        {isFollowing ? "Following" : "Follow"}
                      </Button>
                   </AuthorDetails>
 
@@ -305,9 +524,8 @@ const Story = () => {
                      <Text css={[tw`text-c-18 font-bold`]}>More by {currentStory.author.firstname} {currentStory.author.lastname}</Text>
                      <StoriesGrid>
                         {moreStoriesFromUser.map((story, idx) => (
-                              <StoryCard isSmall story={story} key={idx}/>
-                           ))
-                        }
+                           <StoryCard isSmall story={story} key={idx}/>
+                        ))}
                      </StoriesGrid>
                   </MoreStories>
                </Bucket>
@@ -317,5 +535,21 @@ const Story = () => {
       </StoryWrapper>
    )
 }
+
+const ToolbarDropdownContent = () => (
+   <Bucket as="ul" css={[tw`py-2 w-full`, "width: max-content"]}>
+      <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}>Archive story</Text>
+      <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}>Disable comments</Text>
+      <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}>Delete story</Text>
+   </Bucket>
+);
+
+const ToolbarDropdownTrigger = () => (
+   <Tooltip content="More actions" placement="left">
+   <ToolbarButton css={[tw`-mb-1`]}>
+      <KebabMenuIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
+   </ToolbarButton>
+   </Tooltip>
+)
 
 export default Story;
