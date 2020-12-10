@@ -78,6 +78,13 @@ export const StoryContent = styled.div`
 
 export const StoryTextBox = styled.div`
    ${tw`text-c-15 font-medium text-chill-gray4 mt-6`}
+
+   blockquote {
+      margin: 1rem 0;
+      padding-left: .5rem;
+      color: ${theme`colors.gray.500`};
+      border-left: 2px solid ${theme`colors.gray.400`};
+   }
 `;
 
 export const StoryComments = styled.div`

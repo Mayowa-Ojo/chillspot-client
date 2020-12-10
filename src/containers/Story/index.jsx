@@ -418,7 +418,7 @@ const Story = () => {
                               </Text>
                            </Link>
                            <Bucket as="span" css={[tw`inline-flex items-center`]}>
-                              <Text>Travel blogger</Text>
+                              <Text>{currentStory.author.bio}</Text>
                               <Bucket as="span" css={[tw`w-1 h-1 bg-chill-gray4 inline-block rounded-full mx-2`]} />
                               <Text
                                  css={[tw`font-semibold cursor-pointer hover:text-chill-indigo1`]}
@@ -510,7 +510,7 @@ const Story = () => {
                      <Link to={`/u/${currentStory.author.username}/stories`}>
                         <Text css={[tw`text-c-24 font-bold mt-5`]}>{currentStory.author.firstname} {currentStory.author.lastname}</Text>
                      </Link>
-                     <Text css={[tw`text-c-18 mt-2`]}>Travel Blogger</Text>
+                     <Text css={[tw`text-c-18 mt-2`]}>{currentStory.author.bio}</Text>
                      <Button
                         css={[tw`px-4 py-2 bg-chill-indigo2 rounded-lg mt-3 inline-flex items-center`]}
                         onClick={() => handleUserAction(isFollowing ? "unfollow" : "follow")}
