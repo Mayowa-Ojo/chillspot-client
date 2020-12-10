@@ -40,7 +40,7 @@ import { ReactComponent as QuestionMarkIcon } from "../../assets/svg/question-ma
 const NewStory = () => {
    const history = useHistory();
    const context = useContext(StoreContext);
-   const { dispatch } = context;
+   const { state: { auth: { profile }}, dispatch } = context;
 
    const [editorValue, setEditorValue] = useState([
       {
@@ -57,6 +57,9 @@ const NewStory = () => {
       { value: 'museum', label: 'Museum' },
       { value: 'campground', label: 'Campground' },
       { value: 'mountain', label: 'Mountain' },
+      { value: 'monument', label: 'Monument' },
+      { value: 'tour', label: 'Tour' },
+      { value: 'landmark', label: 'Landmark' },
       { value: 'desert', label: 'Desert' },
    ];
 
@@ -187,7 +190,7 @@ const NewStory = () => {
             payload: "done"
          });
 
-         history.push(`/u/unorthodev/stories`); // NOTE: path should indicate user id
+         history.push(`/u/${profile.username}/stories`); // NOTE: path should indicate user id
       } catch (err) {
          dispatch({
             namespace: "global",
