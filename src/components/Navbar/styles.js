@@ -19,11 +19,12 @@ export const NavItem = styled.button`
 export const SearchBox = styled.div`
    ${tw`py-1 bg-chill-gray2 border border-chill-gray2 relative`}
 
-   max-width: 180px;
+   max-width: 240px;
    width: 180px;
    height: 38px;
    padding: .25rem .5rem .25rem 2rem;
    border-radius: 8px;
+   transition: box-shadow .2s linear, width .2s ease-in-out;
    &:hover {
       border: 1px solid ${theme`colors.chill.gray3`};
       background-color: white;
@@ -33,8 +34,8 @@ export const SearchBox = styled.div`
       border: 1px solid ${theme`colors.chill.gray3`};
       background-color: white;
       box-shadow: 0px 0px 0px 4px rgba(146, 145, 232, 0.15);
+      width: 240px;
    }
-   transition: box-shadow .2s linear;
 `;
 
 export const SearchInput = styled.input`

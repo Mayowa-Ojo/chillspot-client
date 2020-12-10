@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useLocation, useHistory } from "react-router-dom";
 import tw from "twin.macro";
 
@@ -13,6 +13,8 @@ import { ReactComponent as ExitIcon } from "../../assets/svg/exit.svg";
 import { StoreContext } from "../../store";
 import LocalStorage from "../../utils/localstorage";
 import types from "../../store/types";
+import httpRequest from "../../services/http";
+import { requestEndpoints } from "../../constants";
 
 const ls = new LocalStorage();
 
@@ -21,6 +23,53 @@ const Navbar = () => {
    const history = useHistory();
    const context = useContext(StoreContext);
    const { state: { auth }, dispatch } = context;
+   const [searchQuery, setSearchQuery] = useState("");
+
+   const handleSearchQuery = async (e) => {
+      if(e.key !== "Enter") return;
+
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: searchResponse } = await httpRequest(
+            requestEndpoints.stories.search(searchQuery), {
+            method: "GET"
+         });
+
+         dispatch({
+            namespace: "stories",
+            type: types.SET_STORIES_FEED,
+            payload: searchResponse.data.stories
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+      }
+
+      setSearchQuery("");
+   }
 
    const handleLogout = () => {
       ls.delete("user");
@@ -49,7 +98,12 @@ const Navbar = () => {
                { location.pathname === "/stories" ?
                   <SearchBox>
                      <SearchIcon css={[tw`absolute fill-current text-chill-gray4 mt-2 ml-3 left-0`, "width: .8rem; height: .8rem"]}/>
-                     <SearchInput placeholder="Search..." />
+                     <SearchInput 
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={handleSearchQuery}
+                     />
                   </SearchBox>
                   :
                   <NavItem isTransparent css={[tw`-mr-2`]}><Link to="/stories">Stories</Link></NavItem>
