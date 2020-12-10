@@ -13,18 +13,20 @@ import {
    FilterViewsContent,
    StoriesFilter,
    StoriesGrid
-} from './styles';
-import { Bucket, Dropdown, FlexBox, StoryCard, Text, UserCard } from '../../components';
+} from "./styles";
+import { Bucket, Dropdown, FlexBox, StoryCard, Text, UserCard, NoContentPlaceholder } from "../../components";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
 import { ReactComponent as FilterIcon } from "../../assets/svg/filter.svg";
-import { ReactComponent as LoadingIcon } from "../../assets/svg/loading.svg";
+// import { ReactComponent as LoadingIcon } from "../../assets/svg/loading.svg";
+import { Link, useLocation } from "react-router-dom";
 
 const DropdownTrigger = ({ filterView }) => (
    <FilterViews>
       {filterView}
       <ChevronIcon css={[tw`w-3 h-3 stroke-current text-chill-gray4 ml-2 transform rotate-90`]} />
    </FilterViews>
-)
+);
+
 const DropdownContent = ({ filterView, setFilterView }) => (
    <FilterViewsContent>
       <Text 
@@ -34,9 +36,14 @@ const DropdownContent = ({ filterView, setFilterView }) => (
       >popular</Text>
       <Text 
          as="li"
-         css={[filterView === "rating" && tw`text-chill-indigo2`]}
-         onClick={() => setFilterView("rating")}
-      >rating</Text>
+         css={[filterView === "following" && tw`text-chill-indigo2`]}
+         onClick={() => setFilterView("following")}
+      >following</Text>
+      <Text 
+         as="li"
+         css={[filterView === "likes" && tw`text-chill-indigo2`]}
+         onClick={() => setFilterView("likes")}
+      >likes</Text>
       <Text 
          as="li"
          css={[filterView === "recent" && tw`text-chill-indigo2`]}
@@ -51,29 +58,45 @@ const DropdownContent = ({ filterView, setFilterView }) => (
 )
 
 const Stories = () => {
+   const location = useLocation();
    const context = useContext(StoreContext);
-   const { state: { stories, global },  dispatch } = context;
-   const [filterView, setFilterView] = useState("popular");
+   const { state: { stories, global }, dispatch } = context;
+   const [filterView, setFilterView] = useState("recent");
    const [filterCategory, setFilterCategory] = useState("all");
 
    const fetchStories = useCallback(async () => {
-      if(stories.feed.length > 0) return;
+      const searchQuery = location.search.split("=")[1];
+      const validQueries = ["beach", "resort", "park", "museum", "campground", "mountain", "tour"];
 
       try {
+         let storiesResponse;
+
          dispatch({
             namespace: "global",
             type: types.SET_STATUS,
             payload: "loading"
          });
 
-         const { data: response } = await httpRequest(requestEndpoints.stories.feed, {
-            method: "GET"
-         });
+         if(searchQuery && validQueries.includes(searchQuery)) {
+            const { data: response } = await httpRequest(
+               requestEndpoints.stories.byTag(searchQuery), {
+               method: "GET"
+            });
+
+            storiesResponse = response
+         } else {
+            const { data: response } = await httpRequest(
+               requestEndpoints.stories.feed, {
+               method: "GET"
+            });
+
+            storiesResponse = response;
+         }
 
          dispatch({
             namespace: "stories",
             type: types.SET_STORIES_FEED,
-            payload: response.data.stories
+            payload: storiesResponse.data.stories
          });
 
          dispatch({
@@ -98,13 +121,13 @@ const Stories = () => {
          });
          console.error(err.response || err.message);
       }
-   }, [dispatch, stories]);
+   }, [dispatch, location]);
 
    useEffect(() => {
       void async function() {
          await fetchStories();
       }();
-   }, [fetchStories]);
+   }, [fetchStories, location]);
 
    return (
       <Fragment>
@@ -114,14 +137,30 @@ const Stories = () => {
                content={<DropdownContent setFilterView={setFilterView} filterView={filterView} />}
             />
             <FilterCategories>
-               <FilterCategory isActive={filterCategory === "all"} onClick={() => setFilterCategory("all")}>all</FilterCategory>
-               <FilterCategory isActive={filterCategory === "beach"} onClick={() => setFilterCategory("beach")}>beach</FilterCategory>
-               <FilterCategory isActive={filterCategory === "resort"} onClick={() => setFilterCategory("resort")}>resort</FilterCategory>
-               <FilterCategory isActive={filterCategory === "park"} onClick={() => setFilterCategory("park")}>park</FilterCategory>
-               <FilterCategory isActive={filterCategory === "museum"} onClick={() => setFilterCategory("museum")}>museum</FilterCategory>
-               <FilterCategory isActive={filterCategory === "campground"} onClick={() => setFilterCategory("campground")}>campground</FilterCategory>
-               <FilterCategory isActive={filterCategory === "mountain"} onClick={() => setFilterCategory("mountain")}>mountain</FilterCategory>
-               <FilterCategory isActive={filterCategory === "desert"} onClick={() => setFilterCategory("desert")}>desert</FilterCategory>
+               <Link to="/stories">
+                  <FilterCategory isActive={filterCategory === "all"} onClick={() => setFilterCategory("all")}>all</FilterCategory>
+               </Link>
+               <Link to="/stories?tag=beach">
+                  <FilterCategory isActive={filterCategory === "beach"} onClick={() => setFilterCategory("beach")}>beach</FilterCategory>
+               </Link>
+               <Link to="/stories?tag=resort">
+                  <FilterCategory isActive={filterCategory === "resort"} onClick={() => setFilterCategory("resort")}>resort</FilterCategory>
+               </Link>
+               <Link to="/stories?tag=park">
+                  <FilterCategory isActive={filterCategory === "park"} onClick={() => setFilterCategory("park")}>park</FilterCategory>
+               </Link>
+               <Link to="/stories?tag=museum">
+                  <FilterCategory isActive={filterCategory === "museum"} onClick={() => setFilterCategory("museum")}>museum</FilterCategory>
+               </Link>
+               <Link to="/stories?tag=campground">
+                  <FilterCategory isActive={filterCategory === "campground"} onClick={() => setFilterCategory("campground")}>campground</FilterCategory>
+               </Link>
+               <Link to="/stories?tag=mountain">
+                  <FilterCategory isActive={filterCategory === "mountain"} onClick={() => setFilterCategory("mountain")}>mountain</FilterCategory>
+               </Link>
+               <Link to="/stories?tag=tour">
+                  <FilterCategory isActive={filterCategory === "tour"} onClick={() => setFilterCategory("tour")}>tour</FilterCategory>
+               </Link>
             </FilterCategories>
             <FilterSettings>
                <FilterIcon css={[tw`w-4 h-4 fill-current text-chill-gray4 mr-2`]} />
@@ -132,6 +171,9 @@ const Stories = () => {
          <Bucket css={[tw`px-16`]}>
             {
                global.status === "done" &&
+               stories.feed.length < 1 ?
+               <NoContentPlaceholder message="No stories to display"/>
+               :
                <StoriesGrid>
                   {stories.feed.map((story, idx) => (
                      <StoryCard showActionBar story={story} key={idx}/>
@@ -139,7 +181,7 @@ const Stories = () => {
                </StoriesGrid>
             }
 
-            <Bucket css={[tw`mt-20`]}>
+            <Bucket css={[tw`mt-12 mb-8`]}>
                <Text css={[tw`text-c-21 font-semibold`]}>You might also like stories from...</Text>
                <FlexBox css={[tw`mt-10 justify-between`]}>
                   <UserCard />
@@ -148,10 +190,10 @@ const Stories = () => {
                </FlexBox>
             </Bucket>
 
-            <FlexBox css={[tw`mt-12`]}>
+            {/* <FlexBox css={[tw`mt-12`]}>
                <LoadingIcon css={[tw`w-12 h-12 mr-4`]} />
                <Text css={[tw`font-semibold`]}>Loading more...</Text>
-            </FlexBox>
+            </FlexBox> */}
          </Bucket>
       </Fragment>
    )
