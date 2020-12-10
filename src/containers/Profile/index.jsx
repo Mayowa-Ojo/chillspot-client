@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useContext } from "react";
+import React, { useCallback, useEffect, useContext, useState } from "react";
 import { Switch, Route, Link, useRouteMatch, useLocation, useParams } from "react-router-dom";
 import tw from "twin.macro";
 
@@ -63,7 +63,7 @@ const Profile = () => {
          const stories = storiesByUserResponse.data.stories.map(story => ({
             ...story,
             author: response.data.user
-         }))
+         }));
 
          const user = { ...response.data.user, stories };
 
@@ -152,6 +152,7 @@ const Profile = () => {
       void async function() {
          await fetchMoreUserData();
       }();
+      // eslint-disable-next-line
    }, [activeTab]);
 
    return (
@@ -180,7 +181,7 @@ const Profile = () => {
                   }
                   <Dropdown 
                      trigger={<MenuDropdownTrigger />}
-                     content={<MenuDropdownContent />}
+                     content={<MenuDropdownContent currentUser={currentUser} profile={auth.profile} />}
                   />
                </FlexBox>
             </FlexBox>
@@ -239,71 +240,94 @@ const Profile = () => {
          </ProfileNavigation>
 
          <Switch>
-            <Route path={`${path}/stories`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
-            <Route path={`${path}/likes`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
-            <Route path={`${path}/followers`} children={<FriendsList currentUser={currentUser} tab={activeTab} />} />
-            <Route path={`${path}/following`} children={<FriendsList currentUser={currentUser} tab={activeTab} />} />
-            <Route path={`${path}/collections`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
-            <Route path={`${path}/archive`} children={<StoriesGrid currentUser={currentUser} tab={activeTab} />} />
+            <Route path={`${path}/stories`} children={<StoriesGrid tab={activeTab} />} />
+            <Route path={`${path}/likes`} children={<StoriesGrid tab={activeTab} />} />
+            <Route path={`${path}/followers`} children={<FriendsList tab={activeTab} />} />
+            <Route path={`${path}/following`} children={<FriendsList tab={activeTab} />} />
+            <Route path={`${path}/collections`} children={<StoriesGrid tab={activeTab} />} />
+            <Route path={`${path}/archive`} children={<StoriesGrid tab={activeTab} />} />
          </Switch>
       </ProfileContainer>
    );
 }
 
-const StoriesGrid = ({ currentUser, tab }) => {
+const StoriesGrid = ({ tab }) => {
+   const context = useContext(StoreContext);
+   const {state: { users: { currentUser }, global }} = context;
+   const [data, setData] = useState([]);
+
+   useEffect(() => {
+      setData(currentUser[tab])
+      // eslint-disable-next-line
+   }, []);
+
    return (
-      currentUser[tab].length < 1 ?
-      <NoContentPlaceholder message={`No ${tab} to display`} action={{text: "Refresh"}} />
-      :
-      <StoriesGridWrapper>
-         <Bucket as="ul">
-            {currentUser[tab].map((story, idx) => (
-               <StoryCard story={story} key={idx}/>
-            ))
-            }
-         </Bucket>
-      </StoriesGridWrapper>
+      global.status === "done" &&
+      data.length < 1 ?
+         <NoContentPlaceholder message={`No ${tab} to display`} action={{text: "Refresh"}} />
+         :
+         <StoriesGridWrapper>
+            <Bucket as="ul">
+               {data.map((story, idx) => (
+                  <StoryCard story={story} key={idx}/>
+               ))
+               }
+            </Bucket>
+         </StoriesGridWrapper>
    )
 }
 
-const FriendsList = ({ currentUser, tab }) => {
+const FriendsList = ({ tab }) => {
+   const context = useContext(StoreContext);
+   const {state: { users: { currentUser }, global }} = context;
+   const [data, setData] = useState([]);
+
+   useEffect(() => {
+      setData(currentUser[tab])
+      // eslint-disable-next-line
+   }, []);
+
    return (
-      currentUser[tab].length < 1 ?
-      <NoContentPlaceholder message={`No ${tab} to display`} action={{text: "Refresh"}} />
-      :
-      <FriendsListWrapper>
-         <Bucket css={[tw`px-16`]}>
-            <Text css={[tw`text-c-24 font-semibold`]}>5,756 followers</Text>
-            <Bucket as="ul" css={[tw`mt-6`]}>
-               {currentUser[tab].map((user, idx) => (
-                  <FriendsListItem key={idx}>
-                     <Avatar css={[tw`w-20 h-20`, "min-width: 5rem;"]}>
-                        <Image src={user.avatar.url} alt="user avatar"/>
-                     </Avatar>
-                     <FlexBox isCol css={[tw`h-full items-start justify-between ml-4`]}>
-                        <Bucket as="span">
-                           <Text css={[tw`font-semibold`]}>{user.firstname} {user.lastname}</Text>
-                           <Text>{user.bio}</Text>
-                        </Bucket>
-                        <FlexBox css={[tw`items-start justify-start mt-2`]}>
-                           <Button css={[tw`bg-chill-gray2 text-chill-gray4 rounded-md hover:bg-chill-gray3`]}>Follow</Button>
-                           <FlexBox isCol css={[tw`items-start ml-4`]}>
-                              <Text css={[tw`text-c-12 font-semibold`]}>{user.followers.length}</Text>
-                              <Text css={[tw`text-c-12`]}>followers</Text>
+      global.status === "done" &&
+      data.length < 1 ?
+         <NoContentPlaceholder message={`No ${tab} to display`} action={{text: "Refresh"}} />
+         :
+         <FriendsListWrapper>
+            <Bucket css={[tw`px-16`]}>
+               {/* <Text css={[tw`text-c-24 font-semibold`]}>{`${data.length} follower${data.length > 1 ? "s" : ""}`}</Text> */}
+               <Text css={[tw`text-c-24 font-semibold capitalize`]}>{`${tab} | ${data.length}`}</Text>
+               <Bucket as="ul" css={[tw`mt-6`]}>
+                  {data.map((user, idx) => (
+                     <FriendsListItem key={idx}>
+                        <Avatar css={[tw`w-20 h-20`, "min-width: 5rem;"]}>
+                           <Image src={user.avatar.url} alt="user avatar"/>
+                        </Avatar>
+                        <FlexBox isCol css={[tw`h-full items-start justify-between ml-4`]}>
+                           <Bucket as="span">
+                              <Link to={`/u/${user.username}/stories`}>
+                                 <Text css={[tw`font-semibold`]}>{user.firstname} {user.lastname}</Text>
+                              </Link>
+                              <Text>{user.bio}</Text>
+                           </Bucket>
+                           <FlexBox css={[tw`items-start justify-start mt-2`]}>
+                              <Button css={[tw`bg-chill-gray2 text-chill-gray4 rounded-md hover:bg-chill-gray3`]}>Follow</Button>
+                              <FlexBox isCol css={[tw`items-start ml-4`]}>
+                                 <Text css={[tw`text-c-12 font-semibold`]}>{user.followers.length}</Text>
+                                 <Text css={[tw`text-c-12`]}>followers</Text>
+                              </FlexBox>
                            </FlexBox>
                         </FlexBox>
-                     </FlexBox>
-                     <FlexBox css={[tw`justify-start ml-8`]}>
-                        {user.stories.map(story => (
-                           <StoryCard isTiny story={story} />
-                        ))
-                        }
-                     </FlexBox>
-                  </FriendsListItem>
-               ))}
+                        <FlexBox css={[tw`justify-start ml-8`]}>
+                           {user.stories.map((story, idx) => (
+                              <StoryCard isTiny story={story} key={idx}/>
+                           ))
+                           }
+                        </FlexBox>
+                     </FriendsListItem>
+                  ))}
+               </Bucket>
             </Bucket>
-         </Bucket>
-      </FriendsListWrapper>
+         </FriendsListWrapper>
    )
 }
 
@@ -313,9 +337,14 @@ const MenuDropdownTrigger = () => (
    </ProfileButton>
 );
 
-const MenuDropdownContent = () => (
+const MenuDropdownContent = ({currentUser, profile}) => (
    <Bucket as="ul" css={[tw`py-2 w-full`, "width: max-content"]}>
-      <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}>Edit your account settings</Text>
+      {currentUser._id === profile._id && 
+         <Text
+            as="li"
+            css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}
+         >Edit your account settings</Text>
+      }
       <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer flex items-center`]}>
          <BlockIcon css={[tw`fill-current text-chill-gray4 w-4 h-4 mr-2`]}/>
          Block user
