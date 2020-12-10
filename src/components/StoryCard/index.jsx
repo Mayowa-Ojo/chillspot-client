@@ -136,7 +136,7 @@ const StoryCard = ({ story, isSlider, showActionBar, isSmall, isTiny }) => {
                </Text>
                <Bucket as="span" css={[tw`ml-2 text-c-12 font-medium text-chill-gray4 inline-flex items-center`]}>
                   <CommentIcon css={[tw`fill-current text-chill-gray4 mr-2 w-4 h-4`]} />
-                  14
+                  {story.comments.length}
                </Bucket>
                <Bucket as="span" css={[tw`ml-2 text-c-12 font-medium text-chill-gray4 inline-flex items-center`]}>
                   <HeartIcon css={[tw`fill-current text-chill-gray4  mr-2`, "width: 1.15rem; height: 1.15rem", isLiked && tw`text-red-400`]} />
