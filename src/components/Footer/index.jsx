@@ -1,6 +1,6 @@
 import React from 'react';
 import tw from "twin.macro";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { FooterContainer, FooterContent } from './styles';
 import { Text, FlexBox, Bucket } from "..";
@@ -31,11 +31,13 @@ const Footer = () => {
                Made with
                <HeartIcon css={[tw`fill-current text-red-400 w-4 h-4 mx-1`]}/>
                by 
-               <Bucket as="span" css={[tw`ml-1 cursor-pointer hover:underline`]}>Mayowa Ojo</Bucket>
+               <Text as="a" href="https://mayowa-ojo.github.io">
+                  <Bucket as="span" css={[tw`ml-1 cursor-pointer hover:underline`]}>Mayowa Ojo</Bucket>
+               </Text>
                <Bucket as="span" css={[tw`inline-block h-full bg-chill-gray3 mx-3`, "width: 2px;"]}></Bucket>
-               <Link to="https://github.com/Mayowa-Ojo">
+               <Text as="a" href="https://github.com/Mayowa-Ojo/chillspot">
                   <Bucket as="span" css={[tw`cursor-pointer hover:underline`]}>view source</Bucket>
-               </Link>
+               </Text>
             </Text>
          </FooterContent>
       </FooterContainer>
