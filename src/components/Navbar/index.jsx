@@ -144,10 +144,10 @@ const ProfilePopover = ({handleLogout, profile}) => (
          My Likes
       </ProfilePopoverItem>
       </Link>
-      <Link to="/u/unorthodev/collection">
+      <Link to="/u/unorthodev/collections">
       <ProfilePopoverItem css={[tw`w-full flex items-center`]}>
          <FolderIcon css={[tw`fill-current text-chill-gray4 mr-2 w-4 h-4`]}/>
-         My Collection
+         My Collections
       </ProfilePopoverItem>
       </Link>
       <Bucket as="span" css={[tw`px-8 block`]}>
