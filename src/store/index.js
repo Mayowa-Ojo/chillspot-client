@@ -20,7 +20,8 @@ const initialState = {
       moreStoriesFromUser: []
    },
    users: {
-      currentUser: null
+      currentUser: null,
+      suggestedUsers: []
    },
    global: {
       status: "idle", // ["loading", "idle", "error", "done"]

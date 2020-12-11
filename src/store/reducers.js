@@ -59,6 +59,12 @@ const usersReducer = (state, action) => {
             }
          };
 
+      case types.SET_SUGGESTED_USERS:
+         return { ...state, users: {
+            ...state.users,
+            suggestedUsers: action.payload
+         }}
+
       default:
          throw new Error("Invalid action type for users reducer");
    }
