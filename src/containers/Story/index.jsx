@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
 import tw from "twin.macro";
 import Slick from "react-slick";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 
 import { StoreContext } from "../../store";
 import types from "../../store/types";
@@ -22,7 +22,8 @@ import {
    Tooltip, 
    EmojiPicker,
    NoContentPlaceholder,
-   Dropdown
+   Dropdown,
+   DialogBox
 } from '../../components';
 import { 
    HeaderButton,
@@ -56,6 +57,7 @@ import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
 import { ReactComponent as EmojiIcon } from "../../assets/svg/emoji.svg";
 import { ReactComponent as UserFriendsIcon } from "../../assets/svg/user-friends.svg";
 import { ReactComponent as KebabMenuIcon } from "../../assets/svg/kebab-menu.svg";
+import { ReactComponent as ExclamationCircle } from "../../assets/svg/exclamation-circle.svg";
 
 const SliderArrowPrev = ({ onClick }) => (
    <SliderArrow className="slider-control" css={["left: 4px; top: 50%; transform: translate(0, -50%);"]} onClick={onClick}>
@@ -90,6 +92,7 @@ const Story = () => {
    const [isLiked, setIsLiked] = useState(false);
    const [isSaved, setIsSaved] = useState(false);
    const [isFollowing, setIsFollowing] = useState(false);
+   const [isDialogOpen, setDialogOpen] = useState(false);
 
    useEffect(() => {
       if(!currentStory || !profile || !profile.likes) return;
@@ -97,6 +100,7 @@ const Story = () => {
       setIsLiked(profile.likes.includes(currentStory._id));
       setIsSaved(profile.collections.includes(currentStory._id));
       setIsFollowing(profile.following.includes(currentStory.author._id));
+      // eslint-disable-next-line
    }, []);
 
 
@@ -259,7 +263,7 @@ const Story = () => {
    }, [fetchStory]);
 
    const handleStoryAction = async (action) => {
-      if(!["save", "like"].includes(action)) return;
+      if(!["save", "like", "delete"].includes(action)) return;
 
       try {
          dispatch({
@@ -360,42 +364,42 @@ const Story = () => {
       <StoryWrapper>
          {global.status === "done" && currentStory &&
          <Bucket css={[tw`relative`]}>
-         <ActionsToolbarWrapper>
-            <ActionsToolbar>
-               <Avatar css={[tw`w-10 h-10 cursor-pointer mb-4`]}>
-                  <Image src={currentStory.author.avatar.url} alt="profile image" />
-               </Avatar>
-               <Tooltip content="Comment" placement="left">
-                  <ToolbarButton>
-                     <CommentIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
-                     <ToolbarButtonIndicator>{currentStoryComments.length}</ToolbarButtonIndicator>
-                  </ToolbarButton>
-               </Tooltip>
-               <Tooltip content="Save" placement="left">
-                  <ToolbarButton>
-                     <SaveIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
-                  </ToolbarButton>
-               </Tooltip>
-               <Tooltip content="Like" placement="left">
-                  <ToolbarButton>
-                     <HeartIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
-                     <ToolbarButtonIndicator>{currentStory.likes}</ToolbarButtonIndicator>
-                  </ToolbarButton>
-               </Tooltip>
-               <Tooltip content="Share" placement="left">
-                  <ToolbarButton>
-                     <ShareIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
-                  </ToolbarButton>
-               </Tooltip>
-               {currentStory.author._id === profile._id &&
-                  <Dropdown
-                     content={<ToolbarDropdownContent />}
-                     trigger={<ToolbarDropdownTrigger />}
-                     placement="left"
-                  />
-               }
-            </ActionsToolbar>
-         </ActionsToolbarWrapper>
+            <ActionsToolbarWrapper>
+               <ActionsToolbar>
+                  <Avatar css={[tw`w-10 h-10 cursor-pointer mb-4`]}>
+                     <Image src={currentStory.author.avatar.url} alt="profile image" />
+                  </Avatar>
+                  <Tooltip content="Comment" placement="left">
+                     <ToolbarButton>
+                        <CommentIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
+                        <ToolbarButtonIndicator>{currentStoryComments.length}</ToolbarButtonIndicator>
+                     </ToolbarButton>
+                  </Tooltip>
+                  <Tooltip content="Save" placement="left">
+                     <ToolbarButton onClick={() => handleStoryAction("save")}>
+                        <SaveIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`, isSaved && tw`text-chill-indigo2`]}/>
+                     </ToolbarButton>
+                  </Tooltip>
+                  <Tooltip content="Like" placement="left">
+                     <ToolbarButton onClick={() => handleStoryAction("like")}>
+                        <HeartIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`, isLiked && tw`text-chill-indigo2`]}/>
+                        <ToolbarButtonIndicator>{currentStory.likes}</ToolbarButtonIndicator>
+                     </ToolbarButton>
+                  </Tooltip>
+                  <Tooltip content="Share" placement="left">
+                     <ToolbarButton>
+                        <ShareIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
+                     </ToolbarButton>
+                  </Tooltip>
+                  {currentStory.author._id === profile._id &&
+                     <Dropdown
+                        content={<ToolbarDropdownContent setDialogOpen={setDialogOpen}/>}
+                        trigger={<ToolbarDropdownTrigger />}
+                        placement="left"
+                     />
+                  }
+               </ActionsToolbar>
+            </ActionsToolbarWrapper>
 
             <StoryContainerInner>
                <FlexBox isCol css={[tw`justify-start items-start mx-auto`, "max-width: 768px"]}>
@@ -530,17 +534,26 @@ const Story = () => {
                   </MoreStories>
                </Bucket>
             </StoryContainerInner>
+            { isDialogOpen &&
+               <DialogBox>
+                  <ConfirmDeleteDialog setDialogOpen={setDialogOpen} context={context} />
+               </DialogBox>
+            }
          </Bucket>
          }
       </StoryWrapper>
    )
 }
 
-const ToolbarDropdownContent = () => (
+const ToolbarDropdownContent = ({ setDialogOpen }) => (
    <Bucket as="ul" css={[tw`py-2 w-full`, "width: max-content"]}>
       <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}>Archive story</Text>
       <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}>Disable comments</Text>
-      <Text as="li" css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}>Delete story</Text>
+      <Text 
+         as="li"
+         css={[tw`px-4 py-2 text-c-12 hover:bg-chill-gray2 cursor-pointer`]}
+         onClick={() => setDialogOpen(true)}
+      >Delete story</Text>
    </Bucket>
 );
 
@@ -550,6 +563,84 @@ const ToolbarDropdownTrigger = () => (
       <KebabMenuIcon css={[tw`fill-current text-chill-gray4 w-4 h-4`]}/>
    </ToolbarButton>
    </Tooltip>
-)
+);
+
+const ConfirmDeleteDialog = ({ context, setDialogOpen }) => {
+   const { state: { stories: { currentStory }}, dispatch } = context;
+   const history = useHistory();
+
+   const handleDeleteStory = async () => {
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         await httpRequest(
+            requestEndpoints.users.delete(currentStory._id), {
+            method: "DELETE"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+
+         history.push("/stories");
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+         console.error(err.response || err.message);
+      }
+   }
+
+   return (
+      <Bucket css={[tw`bg-white rounded-md overflow-hidden relative`, "min-width: 534px"]}>
+         <Bucket as="span" css={[tw`inline-flex items-center justify-center ml-4 mt-8 w-8 h-8 rounded-full bg-red-200 absolute left-0 top-0`]}>
+            <ExclamationCircle css={[tw`fill-current text-red-400`]} />
+         </Bucket>
+         <Bucket css={[tw`w-full px-4`]}>
+            <Bucket css={[tw`justify-start mt-8 mx-auto w-4/5`]}>
+               <Text css={[tw`font-semibold`]}>Are you sure you want to delete your story?</Text>
+               <Text css={[tw`text-c-12 mt-1 flex items-center`]}>
+                  <Bucket as="span" css={[tw`inline-block w-1 h-1 rounded-full bg-chill-gray4 mr-2`]} />
+                  This is not a reversible action
+               </Text>
+               <Text css={[tw`text-c-12 mt-1 flex items-center`]}>
+                  <Bucket as="span" css={[tw`inline-block w-1 h-1 rounded-full bg-chill-gray4 mr-2`]} />
+                  All comments and images will be deleted
+               </Text>
+            </Bucket>
+            <Bucket css={[tw`mt-4 w-4/5 mx-auto`]}>
+               
+            </Bucket>
+         </Bucket>
+         <FlexBox css={[tw`mt-6 bg-chill-gray1 justify-end items-center py-2 px-4`]}>
+            <Button 
+               css={[tw`bg-transparent text-chill-gray4 border border-chill-gray3 px-4 py-2 rounded-md hover:(bg-chill-gray3)`]}
+               onClick={() => setDialogOpen(false)}
+               >Cancel</Button>
+            <Button 
+               css={[tw`bg-red-400 px-4 py-2 ml-4 rounded-md hover:bg-red-500`]}
+               onClick={handleDeleteStory}
+               >Delete</Button>
+         </FlexBox>
+      </Bucket>
+   );
+}
 
 export default Story;
