@@ -1,24 +1,29 @@
 import React from 'react';
 import tw from "twin.macro";
+import { Link } from 'react-router-dom';
 
 import { Avatar, Image, Text, Button } from '../../components';
 import { CardWrapper, CardAvatar, CardStats, CardStat, CardStatsDivider } from './styles';
 import { ReactComponent as UserFriendsIcon } from "../../assets/svg/user-friends.svg";
 
-const UserCard = () => {
+const UserCard = ({ user }) => {
    return (
       <CardWrapper>
+         <Link to={`/u/${user.username}/stories`}>
          <CardAvatar css={[tw`cursor-pointer`]}>
             <Avatar>
-               <Image src="https://uifaces.co/our-content/donated/KtCFjlD4.jpg" alt="profile picture" />
+               <Image src={user.avatar.url} alt="profile picture" />
             </Avatar>
          </CardAvatar>
-         <Text css={[tw`text-c-21 font-semibold mt-2 cursor-pointer`]}>Mike Gosling</Text>
-         <Text css={[tw`mt-2 text-center`]}>24yr old | Professional Photograher | Loves nature</Text>
+         </Link>
+         <Link to={`/u/${user.username}/stories`}>
+            <Text css={[tw`text-c-21 font-semibold mt-2 cursor-pointer`]}>{user.firstname} {user.lastname}</Text>
+         </Link>
+         <Text css={[tw`mt-2 text-center`]}>{user.bio}</Text>
          <CardStats>
             <CardStat>
                <Text css={[tw`font-semibold text-opacity-50`]}>Stories</Text>
-               <Text css={[tw`font-semibold text-c-24`]}>20</Text>
+               <Text css={[tw`font-semibold text-c-24`]}>{user.stories.length}</Text>
             </CardStat>
             <CardStatsDivider />
             <CardStat>

@@ -1,7 +1,7 @@
 import tw, { styled } from "twin.macro";
 
 export const CardWrapper = styled.div`
-   ${tw`flex flex-col items-center p-6 rounded-xl bg-chill-gray1 border border-chill-gray2`}
+   ${tw`flex flex-col items-center p-6 rounded-xl bg-chill-gray1 border border-chill-gray2 mr-8 mt-8`}
 
    width: 370px;
    height: 350px;
