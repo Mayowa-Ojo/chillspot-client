@@ -224,11 +224,13 @@ const Profile = () => {
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/archive`}>
-               <ProfileNavItem isActive={activeTab === "archive"}>
-                  <ActiveTabIndicator />
-                  Archive
-                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
-               </ProfileNavItem>
+               {currentUser._id === auth.profile._id &&
+                  <ProfileNavItem isActive={activeTab === "archive"}>
+                     <ActiveTabIndicator />
+                     Archive
+                     <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
+                  </ProfileNavItem>
+               }
                </Link>
                <Bucket css={[tw`inline-flex flex-auto justify-end -mr-4`]}>
                   <Dropdown 
