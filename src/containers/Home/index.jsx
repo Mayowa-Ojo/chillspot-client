@@ -41,12 +41,12 @@ const Home = () => {
    }
 
    const locationMarkers = [
-      { location: "39°55’N 32°55’E", top: "10%", left: "100%"},
-      { location: "39°55’N 32°55’E", top: "20%", left: "50%"},
-      { location: "39°55’N 32°55’E", top: "75%", left: "15%"},
-      { location: "39°55’N 32°55’E", top: "68%", left: "92%"},
-      { location: "39°55’N 32°55’E", top: "82%", left: "55%"},
-      { location: "39°55’N 32°55’E", top: "50%", left: "50%"}
+      { location: "51° 07’ N | -115° 33’ W", top: "10%", left: "100%", slug: "UBl39AHBn--Banff-National-Park"},
+      { location: "50° 03’ N | 19° 56’ E", top: "20%", left: "50%", slug: "jz4ePgjoGI-Wawel-Royal-Castle"},
+      { location: "41° 08’ N | 8° 36’ W", top: "75%", left: "15%", slug: "W-DBS_vxrn-Bali"},
+      { location: "8° 19’ S | 115° 05’ E", top: "68%", left: "92%", slug: "cwA4jDUEKJ-Mt.-Pulag-National-Park"},
+      { location: "16° 35’ N | 120° 54’ E", top: "82%", left: "55%", slug: "hvO6wfZ6Cz-Palacio-da-Bolsa"},
+      { location: "55° 56’ N | 3° 12’ E", top: "50%", left: "50%", slug: "PIE1ZIhbNV-Edinburgh-Castle"}
    ]
 
    const context = useContext(StoreContext);
@@ -64,7 +64,7 @@ const Home = () => {
             payload: "loading"
          });
 
-         const { data: response } = await httpRequest(requestEndpoints.stories.feed, {
+         const { data: response } = await httpRequest(requestEndpoints.stories.feed(sliderFilter, "5"), {
             method: "GET"
          });
 
@@ -96,13 +96,13 @@ const Home = () => {
          });
          console.error(err.response || err.message);
       }
-   }, [dispatch, stories]);
+   }, [dispatch, stories, sliderFilter]);
 
    useEffect(() => {
       void async function() {
          await fetchStories();
       }();
-   }, [fetchStories]);
+   }, [fetchStories, sliderFilter]);
 
    return (
       <Bucket css={[tw`bg-chill-gray1 h-full`]}>
@@ -119,11 +119,13 @@ const Home = () => {
                      </JumbotronButton>
                   </Link>
                   { locationMarkers.map((marker, idx) => (
+                     <Link to={{pathname: `/x/story/${marker.slug}`, state: {background: location, component: "story"}}}>
                      <Marker top={marker.top} left={marker.left} key={idx}>
                         <Tooltip content={marker.location} placement="top" isLight>
                            <MarkerIcon css={[tw`w-5 h-5 fill-current text-white hover:text-green-400 cursor-pointer`]}/>
                         </Tooltip>
                      </Marker>
+                     </Link>
                   ))}
                </FlexBox>
             </Jumbotron>
@@ -171,7 +173,7 @@ const Home = () => {
 
                <Link to={{ pathname: "/x/new", state: { background: location, component: "newStory" }}}>
                <Bucket css={[tw`mt-8`]}>
-                  <Button css={[tw`text-c-18 font-semibold px-4 rounded-md bg-chill-indigo2`]}>Share your story</Button>
+                  <Button css={[tw`text-c-15 font-semibold px-4 py-2 rounded-md bg-chill-indigo2`]}>Share your story</Button>
                </Bucket>
                </Link>
 
