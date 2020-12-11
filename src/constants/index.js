@@ -7,7 +7,9 @@ export const requestEndpoints = {
       one: (id) => `/stories/${id}`,
       oneBySlug: (slug) => `/stories/slug?slug=${slug}`,
       all: "/stories",
-      feed: "/stories/feed",
+      feed: (sort, limit) => `/stories/feed?sort=${sort}&limit=${limit}`,
+      byTag: (query) => `/stories/tag?q=${query}`,
+      search: (query) => `/stories/search?q=${query}`,
       create: "/stories",
       delete: "/stories",
       like: (id) => `/stories/${id}/like`,
@@ -27,8 +29,10 @@ export const requestEndpoints = {
       moreData: (id, key) => `/users/${id}/${key}`,
       oneByQuery: (query) => `/users/username?${query}`,
       update: (id) => `/users/${id}`,
+      delete: (id) => `/users/${id}`,
       follow: (id) => `/users/${id}/follow`,
       unfollow: (id) => `/users/${id}/unfollow`,
+      followSuggestions: "/users/follow-suggestions",
       resetPassword: (id) => `/users/${id}/reset-password`
    },
    images: {
