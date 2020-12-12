@@ -1,0 +1,9 @@
+node_modules/
+*.env
+.DS_Store
+_notes.md
+src/assets/svg
+src/assets/images
+src/assets/styles.css
+build
+coverage
