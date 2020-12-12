@@ -1,7 +1,7 @@
 import React from 'react';
 import tw, { styled } from "twin.macro";
 
-import { Text, Button } from "..";
+import { Text } from "..";
 import { ReactComponent as NoContentIllustration } from "../../assets/svg/no-content.svg";
 
 const NoContentPlaceholder = ({ message }) => {
