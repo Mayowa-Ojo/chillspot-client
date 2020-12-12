@@ -41,9 +41,9 @@ const DropdownContent = ({ filterView, setFilterView }) => (
       >following</Text>
       <Text 
          as="li"
-         css={[filterView === "likes" && tw`text-chill-indigo2`]}
-         onClick={() => setFilterView("likes")}
-      >likes</Text>
+         css={[filterView === "approval" && tw`text-chill-indigo2`]}
+         onClick={() => setFilterView("approval")}
+      >approval</Text>
       <Text 
          as="li"
          css={[filterView === "recent" && tw`text-chill-indigo2`]}
@@ -60,9 +60,21 @@ const DropdownContent = ({ filterView, setFilterView }) => (
 const Stories = () => {
    const location = useLocation();
    const context = useContext(StoreContext);
-   const { state: { stories, global }, dispatch } = context;
+   const { state: { stories, users, global }, dispatch } = context;
    const [filterView, setFilterView] = useState("recent");
    const [filterCategory, setFilterCategory] = useState("all");
+
+   const fetchFollowSuggestions = async () => {
+      try {
+         const {data: suggestionsResponse } = await httpRequest(requestEndpoints.users.followSuggestions, {
+            method: "GET"
+         });
+
+         return suggestionsResponse;
+      } catch (err) {
+         throw new Error(err);
+      }
+   };
 
    const fetchStories = useCallback(async () => {
       const searchQuery = location.search.split("=")[1];
@@ -86,17 +98,25 @@ const Stories = () => {
             storiesResponse = response
          } else {
             const { data: response } = await httpRequest(
-               requestEndpoints.stories.feed, {
+               requestEndpoints.stories.feed(filterView, "100"), {
                method: "GET"
             });
 
             storiesResponse = response;
          }
 
+         const suggestionsResponse = await fetchFollowSuggestions();
+
          dispatch({
             namespace: "stories",
             type: types.SET_STORIES_FEED,
             payload: storiesResponse.data.stories
+         });
+
+         dispatch({
+            namespace: "users",
+            type: types.SET_SUGGESTED_USERS,
+            payload: suggestionsResponse.data.users
          });
 
          dispatch({
@@ -121,13 +141,13 @@ const Stories = () => {
          });
          console.error(err.response || err.message);
       }
-   }, [dispatch, location]);
+   }, [dispatch, location, filterView]);
 
    useEffect(() => {
       void async function() {
          await fetchStories();
       }();
-   }, [fetchStories, location]);
+   }, [fetchStories, location, filterView]);
 
    return (
       <Fragment>
@@ -181,13 +201,17 @@ const Stories = () => {
                </StoriesGrid>
             }
 
-            <Bucket css={[tw`mt-12 mb-8`]}>
-               <Text css={[tw`text-c-21 font-semibold`]}>You might also like stories from...</Text>
-               <FlexBox css={[tw`mt-10 justify-between`]}>
-                  <UserCard />
-                  <UserCard />
-                  <UserCard />
-               </FlexBox>
+            <Bucket css={[tw`my-12`]}>
+               {users.suggestedUsers.length > 0 &&
+                  <>
+                  <Text css={[tw`text-c-21 font-semibold`]}>You might also like stories from...</Text>
+                  <FlexBox css={[tw`mt-2 justify-start flex-wrap`]}>
+                     {users.suggestedUsers.map((user, idx) => (
+                        <UserCard user={user} key={idx}/>
+                     ))}
+                  </FlexBox>
+                  </>
+               }
             </Bucket>
 
             {/* <FlexBox css={[tw`mt-12`]}>
