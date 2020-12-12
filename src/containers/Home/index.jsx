@@ -119,13 +119,13 @@ const Home = () => {
                      </JumbotronButton>
                   </Link>
                   { locationMarkers.map((marker, idx) => (
-                     <Link to={{pathname: `/x/story/${marker.slug}`, state: {background: location, component: "story"}}}>
                      <Marker top={marker.top} left={marker.left} key={idx}>
+                        <Link to={{pathname: `/x/story/${marker.slug}`, state: {background: location, component: "story"}}}>
                         <Tooltip content={marker.location} placement="top" isLight>
                            <MarkerIcon css={[tw`w-5 h-5 fill-current text-white hover:text-green-400 cursor-pointer`]}/>
                         </Tooltip>
+                        </Link>
                      </Marker>
-                     </Link>
                   ))}
                </FlexBox>
             </Jumbotron>
