@@ -1,5 +1,6 @@
 node_modules/
-*.env
+*.env.development
+*.env.production
 .DS_Store
 _notes.md
 src/assets/svg
