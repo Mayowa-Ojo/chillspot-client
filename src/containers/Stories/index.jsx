@@ -194,25 +194,31 @@ const Stories = () => {
                stories.feed.length < 1 ?
                <NoContentPlaceholder message="No stories to display"/>
                :
+               <>
                <StoriesGrid>
-                  {stories.feed.map((story, idx) => (
+                  {stories.feed.map(story => story).slice(0, 8).map((story, idx) => (
                      <StoryCard showActionBar story={story} key={idx}/>
                   ))}
                </StoriesGrid>
+               <Bucket css={[tw`my-12`]}>
+                  {users.suggestedUsers.length > 0 &&
+                     <>
+                     <Text css={[tw`text-c-21 font-semibold`]}>You might also like stories from...</Text>
+                     <FlexBox css={[tw`mt-2 justify-start flex-wrap`]}>
+                        {users.suggestedUsers.map((user, idx) => (
+                           <UserCard user={user} key={idx}/>
+                        ))}
+                     </FlexBox>
+                     </>
+                  }
+               </Bucket>
+               <StoriesGrid>
+                  {stories.feed.map(story => story).slice(8, stories.feed.length).map((story, idx) => (
+                     <StoryCard showActionBar story={story} key={idx}/>
+                  ))}
+               </StoriesGrid>
+               </>
             }
-
-            <Bucket css={[tw`my-12`]}>
-               {users.suggestedUsers.length > 0 &&
-                  <>
-                  <Text css={[tw`text-c-21 font-semibold`]}>You might also like stories from...</Text>
-                  <FlexBox css={[tw`mt-2 justify-start flex-wrap`]}>
-                     {users.suggestedUsers.map((user, idx) => (
-                        <UserCard user={user} key={idx}/>
-                     ))}
-                  </FlexBox>
-                  </>
-               }
-            </Bucket>
 
             {/* <FlexBox css={[tw`mt-12`]}>
                <LoadingIcon css={[tw`w-12 h-12 mr-4`]} />
