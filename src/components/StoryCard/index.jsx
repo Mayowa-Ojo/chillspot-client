@@ -25,6 +25,7 @@ const StoryCard = ({ story, isSlider, showActionBar, isSmall, isTiny }) => {
       if(!profile || !profile.likes) return;
       setIsLiked(profile.likes.includes(story._id));
       setIsSaved(profile.collections.includes(story._id));
+      // eslint-disable-next-line
    }, []);
 
    const handleStoryAction = async (evt, action) => {

@@ -29,6 +29,7 @@ const Comment = ({ comment }) => {
 
       setIsLiked(comment.likedBy.includes(profile._id));
       setIsDisliked(comment.dislikedBy.includes(profile._id));
+      // eslint-disable-next-line
    }, []);
 
    const emojiRef = useRef(null);
