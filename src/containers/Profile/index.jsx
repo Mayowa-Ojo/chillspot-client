@@ -192,35 +192,35 @@ const Profile = () => {
                <ProfileNavItem isActive={activeTab === "stories"}>
                   <ActiveTabIndicator/>
                   Stories
-                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>0</Bucket>
+                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>{currentUser["stories"].length}</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/likes`}>
                <ProfileNavItem isActive={activeTab === "likes"}>
                   <ActiveTabIndicator />
                   Likes
-                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>22</Bucket>
+                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>{currentUser["likes"].length}</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/followers`}>
                <ProfileNavItem isActive={activeTab === "followers"}>
                   <ActiveTabIndicator />
                   Followers
-                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>1,280</Bucket>
+                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>{currentUser["followers"].length}</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/following`}>
                <ProfileNavItem isActive={activeTab === "following"}>
                   <ActiveTabIndicator />
                   Following
-                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>470</Bucket>
+                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>{currentUser["following"].length}</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/collections`}>
                <ProfileNavItem isActive={activeTab === "collections"}>
                   <ActiveTabIndicator />
                   Collections
-                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
+                  <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>{currentUser["collections"].length}</Bucket>
                </ProfileNavItem>
                </Link>
                <Link to={`${url}/archive`}>
@@ -228,7 +228,7 @@ const Profile = () => {
                   <ProfileNavItem isActive={activeTab === "archive"}>
                      <ActiveTabIndicator />
                      Archive
-                     <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>2</Bucket>
+                     <Bucket as="span" css={[tw`font-medium text-chill-gray3 ml-2`]}>{currentUser["archive"].length}</Bucket>
                   </ProfileNavItem>
                }
                </Link>
