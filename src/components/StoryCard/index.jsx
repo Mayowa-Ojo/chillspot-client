@@ -19,12 +19,10 @@ const StoryCard = ({ story, isSlider, showActionBar, isSmall, isTiny }) => {
    const context = useContext(StoreContext);
    const { state: { auth: { profile }}, dispatch } = context;
    const [isLiked, setIsLiked] = useState(false);
-   const [isSaved, setIsSaved] = useState(false);
 
    useEffect(() => {
       if(!profile || !profile.likes) return;
       setIsLiked(profile.likes.includes(story._id));
-      setIsSaved(profile.collections.includes(story._id));
       // eslint-disable-next-line
    }, []);
 
