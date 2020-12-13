@@ -2,7 +2,7 @@ import React from 'react';
 import tw from "twin.macro";
 
 import { Bucket, FlexBox, Text, Button } from "..";
-import { ReactComponent as Illustration } from "../../assets/svg/404.svg";
+import { ReactComponent as Illustration } from "../../assets/svg/500.svg";
 
 const ErrorFallback = ({resetErrorBoundary}) => {
    return (
