@@ -28,7 +28,7 @@ const UserCard = ({ user }) => {
             <CardStatsDivider />
             <CardStat>
                <Text css={[tw`font-semibold text-opacity-50`]}>Followers</Text>
-               <Text css={[tw`font-semibold text-c-24`]}>542</Text>
+               <Text css={[tw`font-semibold text-c-24`]}>{user.followers.length}</Text>
             </CardStat>
          </CardStats>
          <Button css={[tw`inline-flex items-center px-4 rounded-md mt-4`]}>
