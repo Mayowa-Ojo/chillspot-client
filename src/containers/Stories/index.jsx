@@ -80,6 +80,8 @@ const Stories = () => {
       const searchQuery = location.search.split("=")[1];
       const validQueries = ["beach", "resort", "park", "museum", "campground", "mountain", "tour"];
 
+      if(location?.state?.shouldNotFetchStories) return;
+
       try {
          let storiesResponse;
 
