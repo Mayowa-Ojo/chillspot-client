@@ -4,5 +4,6 @@ node_modules/
 .DS_Store
 _notes.md
 src/assets/images
+src/assets/styles.css
 build
 coverage
