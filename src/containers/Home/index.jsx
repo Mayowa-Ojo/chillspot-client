@@ -1,14 +1,14 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react'
+import React, { useState, useContext, useEffect, useCallback, useRef } from "react"
 import tw from "twin.macro";
 import Slick from "react-slick";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 import { StoreContext } from "../../store";
 import types from "../../store/types";
 import httpRequest from "../../services/http";
 import { requestEndpoints } from "../../constants";
 import { Bucket, Button, Image, Text, FlexBox, StoryCard, Tooltip } from "../../components"
-import { Jumbotron, SearchBox , SearchInput, Marker, StorieSlider, SliderArrow, SliderFilter, JumbotronButton } from './styles';
+import { Jumbotron, SearchBox , SearchInput, Marker, StorieSlider, SliderArrow, SliderFilter, JumbotronButton } from "./styles";
 import { ReactComponent as SearchIcon } from "../../assets/svg/search.svg";
 import { ReactComponent as ChevronIcon } from "../../assets/svg/chevron.svg";
 import { ReactComponent as MarkerIcon } from "../../assets/svg/marker.svg";
@@ -52,10 +52,87 @@ const Home = () => {
    const context = useContext(StoreContext);
    const { state: { stories, global }, dispatch } = context;
    const [sliderFilter, setSliderFilter] = useState("popular");
+   const [searchQuery, setSearchQuery] = useState("");
+   const [isMounted, setIsMounted] = useState(false);
    const location = useLocation();
+   const history = useHistory();
+
+   const searchBoxRef = useRef(null);
+
+   useEffect(() => {
+      setIsMounted(true);
+
+      return () => {
+         setIsMounted(false);
+      }
+   }, []);
+
+   const handleSearch = async (e) => {
+      if(e.key !== "Enter") return;
+
+      if(!isMounted) return; // prevent calling setState on an unmounted component
+
+      try {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "loading"
+         });
+
+         const { data: searchResponse } = await httpRequest(
+            requestEndpoints.stories.search(searchQuery), {
+            method: "GET"
+         });
+
+         dispatch({
+            namespace: "stories",
+            type: types.SET_STORIES_FEED,
+            payload: searchResponse.data.stories
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "done"
+         });
+
+         history.push("/stories", {shouldNotFetchStories: true});
+      } catch (err) {
+         dispatch({
+            namespace: "global",
+            type: types.SET_STATUS,
+            payload: "error"
+         });
+
+         dispatch({
+            namespace: "global",
+            type: types.SHOW_TOAST,
+            payload: {
+               type: "error",
+               message: "Oops! something went wrong, please check your network and try again."
+            }
+         });
+      }
+
+      setSearchQuery("");
+   }
+
+   useEffect(() => {
+      const handleSearchFocus = (e) => {
+         if(!e.altKey || e.key !== "s") return;
+
+         searchBoxRef.current.focus();
+      }
+
+      window && window.addEventListener("keydown", handleSearchFocus);
+
+      return () => { // cleanup
+         window && window.removeEventListener("keydown", handleSearchFocus);
+      }
+   }, []);
 
    const fetchStories = useCallback(async () => {
-      if(stories.feed.length > 0) return;
+      // if(stories.feed.length > 0) return;
 
       try {
          dispatch({
@@ -96,13 +173,13 @@ const Home = () => {
          });
          console.error(err.response || err.message);
       }
-   }, [dispatch, stories, sliderFilter]);
+   }, [dispatch, sliderFilter]);
 
    useEffect(() => {
       void async function() {
          await fetchStories();
       }();
-   }, [fetchStories, sliderFilter]);
+   }, [fetchStories]);
 
    return (
       <Bucket css={[tw`bg-chill-gray1 h-full`]}>
@@ -132,7 +209,12 @@ const Home = () => {
 
             <Bucket css={[tw`w-2/5 mx-10 mt-8`]}>
                <SearchBox>
-                  <SearchInput placeholder='Search... press "/" to focus'/>
+                  <SearchInput
+                     placeholder="Search for stories, tags, locations... [alt+s]"
+                     onKeyDown={handleSearch}
+                     onChange={(e) => setSearchQuery(e.target.value)}
+                     ref={searchBoxRef}
+                  />
                   <SearchIcon css={[tw`w-4 h-4 absolute right-0 top-0 mr-4 mt-3`]} />
                </SearchBox>
 

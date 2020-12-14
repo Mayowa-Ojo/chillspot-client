@@ -49,6 +49,7 @@ export const SearchInput = styled.input`
 
    &::placeholder {
       opacity: 75%;
+      font-size: 13px;
    }
 `;
 
