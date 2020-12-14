@@ -133,7 +133,10 @@ export const MoreStories = styled.div`
 `;
 
 export const StoriesGrid = styled.div`
-   ${tw`mx-auto mt-4 flex flex-wrap justify-start`}
+   ${tw`mx-auto flex flex-wrap justify-start`}
+   & > div {
+      margin-top: 2rem;
+   }
 `;
 
 export const ActionsToolbarWrapper = styled.div`
