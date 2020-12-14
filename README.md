@@ -28,6 +28,7 @@ Requirements
    - Node >=10.x.X
    - React >= 16.8
 ```shell
+
 $ git clone https://github.com/Mayowa-Ojo/chillspot-client.git <folder>
 $ npm install
 $ touch .env.development # check .env.example for required variables
@@ -59,4 +60,4 @@ Account Settings
 ![Account Settings Page](https://chillspot-s3-bucket.s3.us-east-2.amazonaws.com/images/Screenshot-account-settings.png)
 
 ### Bug report
-If you find any bugs in this app, [open an issue](https://github.com/Mayowa-Ojo/chillspot-server/issues/new)
+If you find any bugs in this app, [open an issue](https://github.com/Mayowa-Ojo/chillspot-client/issues/new)
