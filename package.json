@@ -35,8 +35,8 @@
   "scripts": {
     "build:css": "postcss src/assets/tailwind.css -o src/assets/styles.css",
     "watch:css": "postcss src/assets/tailwind.css -o src/assets/styles.css",
-    "prebuild:css": "rm src/assets/styles.css & touch src/assets/styles.css",
-    "prewatch:css": "rm src/assets/styles.css & touch src/assets/styles.css",
+    "prebuild:css": "rm ./src/assets/styles.css & touch ./src/assets/styles.css",
+    "prewatch:css": "rm ./src/assets/styles.css & touch ./src/assets/styles.css",
     "start": "npm run watch:css & react-scripts start",
     "build": "npm run build:css & react-scripts build",
     "test": "react-scripts test",
